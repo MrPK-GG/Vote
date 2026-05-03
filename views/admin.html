@@ -1,0 +1,3853 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel — AKR Academy</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/themes.js"></script>
+  <style>
+    :root {
+      --gold: #F5A623;
+      --gold-l: #FFD166;
+      --gold-d: #C77B00;
+      --navy: #0A1A4E;
+      --navy-l: #1A2F7A;
+      --blue: #1B4FD8;
+      --blue-l: #3B6FF0;
+      --bg: #060F30;
+      --surface: rgba(255, 255, 255, 0.04);
+      --surface2: rgba(255, 255, 255, 0.08);
+      --border: rgba(245, 166, 35, 0.15);
+      --border-h: rgba(245, 166, 35, 0.35);
+      --text: #fff;
+      --text-muted: rgba(255, 255, 255, 0.45);
+      --text-dim: rgba(255, 255, 255, 0.25);
+      --success: #2ECC71;
+      --danger: #E74C3C;
+      --warning: #F39C12;
+      --radius: 14px;
+      --sidebar: 260px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar);
+      flex-shrink: 0;
+      background: color-mix(in srgb, var(--bg) 95%, transparent);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: sticky;
+      top: 0;
+      overflow-y: auto;
+    }
+
+    .sidebar-brand {
+      padding: 28px 20px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .brand-text {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1.3;
+    }
+
+    .brand-text small {
+      display: block;
+      font-family: 'Nunito', sans-serif;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+    }
+
+    .nav-group {
+      padding: 16px 12px 8px;
+    }
+
+    .nav-group-label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 2.5px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      padding: 0 8px;
+      margin-bottom: 6px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 12px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover {
+      background: var(--surface);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: rgba(245, 166, 35, 0.1);
+      color: var(--gold);
+      border-color: var(--border);
+    }
+
+    .nav-icon {
+      font-size: 16px;
+      width: 22px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px 12px;
+      border-top: 1px solid var(--border);
+    }
+
+    .admin-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--surface);
+      border-radius: 10px;
+    }
+
+    .admin-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold-d), var(--gold));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--navy);
+      flex-shrink: 0;
+    }
+
+    .admin-name {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .admin-role {
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    .logout-btn {
+      margin-top: 8px;
+      width: 100%;
+      padding: 10px;
+      background: rgba(231, 76, 60, 0.1);
+      border: 1px solid rgba(231, 76, 60, 0.2);
+      border-radius: 10px;
+      color: #E74C3C;
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover {
+      background: rgba(231, 76, 60, 0.2);
+    }
+
+    /* MAIN CONTENT */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      height: 64px;
+      flex-shrink: 0;
+      background: color-mix(in srgb, var(--bg) 95%, transparent);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      backdrop-filter: blur(20px);
+    }
+
+    .topbar .menu-toggle {
+      display: none;
+    }
+
+    .topbar-title {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px;
+    }
+
+    /* PANELS */
+    .panel {
+      display: none;
+    }
+
+    .panel.active {
+      display: block;
+    }
+
+    /* CARDS */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold-d), var(--gold));
+    }
+
+    .stat-card:hover {
+      border-color: var(--border-h);
+      transform: translateY(-2px);
+    }
+
+    .stat-icon {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+
+    .stat-value {
+      font-family: 'Cinzel', serif;
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--gold);
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* TABLE */
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .table-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .table-title {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .table-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .pagination-info {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .pagination-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .pagination-buttons .btn {
+      padding: 8px 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: rgba(255, 255, 255, 0.04);
+      padding: 13px 16px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    thead th:first-child {
+      padding-left: 20px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    tbody td {
+      padding: 14px 16px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    tbody td:first-child {
+      padding-left: 20px;
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    /* CHECKBOX */
+    .cb {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .badge-gold {
+      background: rgba(245, 166, 35, 0.15);
+      color: var(--gold);
+      border: 1px solid rgba(245, 166, 35, 0.3);
+    }
+
+    .badge-green {
+      background: rgba(46, 204, 113, 0.12);
+      color: var(--success);
+      border: 1px solid rgba(46, 204, 113, 0.25);
+    }
+
+    .badge-red {
+      background: rgba(231, 76, 60, 0.12);
+      color: #E74C3C;
+      border: 1px solid rgba(231, 76, 60, 0.25);
+    }
+
+    .badge-blue {
+      background: rgba(27, 79, 216, 0.15);
+      color: #6B9BFF;
+      border: 1px solid rgba(27, 79, 216, 0.3);
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 9px 18px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      font-family: 'Nunito', sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold-d), var(--gold));
+      color: var(--navy);
+      border-color: var(--gold);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 4px 16px rgba(245, 166, 35, 0.4);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-muted);
+      border-color: var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--border-h);
+      color: var(--text);
+    }
+
+    .btn-danger {
+      background: rgba(231, 76, 60, 0.12);
+      color: #E74C3C;
+      border-color: rgba(231, 76, 60, 0.25);
+    }
+
+    .btn-danger:hover {
+      background: rgba(231, 76, 60, 0.2);
+    }
+
+    .btn-warning {
+      background: rgba(245, 166, 35, 0.12);
+      color: #F39C12;
+      border-color: rgba(245, 166, 35, 0.25);
+    }
+
+    .btn-warning:hover {
+      background: rgba(245, 166, 35, 0.2);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 11px;
+      border-radius: 8px;
+    }
+
+    .btn-icon {
+      padding: 7px;
+      border-radius: 8px;
+      font-size: 15px;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--navy-l, var(--navy));
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 540px;
+      max-width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.6);
+      animation: modal-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes modal-in {
+      from {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .modal-header {
+      padding: 24px 28px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-family: 'Cinzel', serif;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .modal-close {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .modal-body {
+      padding: 24px 28px;
+    }
+
+    .modal-footer {
+      padding: 16px 28px 24px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* FORM */
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 13px 16px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--gold);
+      background: rgba(245, 166, 35, 0.05);
+      box-shadow: 0 0 16px rgba(245, 166, 35, 0.12);
+    }
+
+    .form-control::placeholder {
+      color: var(--text-dim);
+    }
+
+    select.form-control option {
+      background: var(--navy-l, var(--navy));
+      color: var(--text);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* File input */
+    .file-input-wrapper {
+      position: relative;
+      border: 2px dashed var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .file-input-wrapper:hover {
+      border-color: var(--border-h);
+      background: rgba(245, 166, 35, 0.03);
+    }
+
+    .file-input-wrapper input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .file-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .file-preview {
+      margin-top: 12px;
+    }
+
+    .file-preview img {
+      height: 60px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    /* Preview section in modal */
+    .preview-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-top: 12px;
+      display: none;
+    }
+
+    .preview-card.visible {
+      display: block;
+    }
+
+    .preview-label {
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .preview-candidate {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .preview-img {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 2px solid var(--gold);
+      background: linear-gradient(135deg, var(--navy-l), var(--blue));
+      object-fit: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--gold);
+      overflow: hidden;
+    }
+
+    .preview-info .name {
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .preview-info .meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    /* Result cards */
+    .result-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .result-rank {
+      font-family: 'Cinzel', serif;
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--text-dim);
+      width: 32px;
+    }
+
+    .result-rank.first {
+      color: var(--gold);
+    }
+
+    .result-pic {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--navy-l), var(--blue));
+      border: 2px solid var(--border);
+      flex-shrink: 0;
+      object-fit: cover;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 14px;
+      color: var(--gold);
+    }
+
+    .result-info {
+      flex: 1;
+    }
+
+    .result-name {
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .result-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .result-bar-wrap {
+      flex: 1;
+      max-width: 200px;
+    }
+
+    .result-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+
+    .result-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--gold-d), var(--gold));
+      border-radius: 100px;
+      transition: width 1s ease;
+    }
+
+    .result-votes {
+      font-family: 'Cinzel', serif;
+      font-size: 18px;
+      font-weight: 900;
+      color: var(--gold);
+      margin-left: 12px;
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .toast {
+      background: var(--navy-l, var(--navy));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 20px;
+      min-width: 260px;
+      max-width: 360px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      animation: toast-in 0.3s ease;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateX(30px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .toast.success {
+      border-color: rgba(46, 204, 113, 0.4);
+    }
+
+    .toast.error {
+      border-color: rgba(231, 76, 60, 0.4);
+    }
+
+    .toast-icon {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    /* Print styles */
+    @media print {
+      @page {
+        size: A4;
+        margin: 15mm 20mm;
+      }
+
+      * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+      }
+
+      .sidebar,
+      .topbar,
+      .table-actions,
+      .btn,
+      .modal-overlay,
+      .toast-container,
+      .table-header,
+      .table-footer {
+        display: none !important;
+      }
+
+      .main {
+        display: block !important;
+        overflow: visible;
+        padding: 0;
+        margin: 0;
+      }
+
+      .panel {
+        display: block !important;
+        overflow: visible;
+        padding: 0;
+        margin: 0;
+      }
+
+      .content {
+        overflow: visible;
+        padding: 0;
+        margin: 0;
+        display: block !important;
+      }
+
+      body {
+        background: #fff;
+        color: #000;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .table-card {
+        border: none !important;
+        background: transparent !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* Results specific styling */
+      #results-detail {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        display: block;
+      }
+
+      /* Category wrapper divs */
+      #results-detail>div:not(:first-child) {
+        margin-bottom: 16px;
+        page-break-inside: avoid;
+      }
+
+      /* Category title styling */
+      #results-detail>div:not(:first-child)>div:first-child {
+        font-family: 'Cinzel', serif;
+        font-weight: 700;
+        color: #C77B00 !important;
+        font-size: 14px;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+        border-bottom: 2px solid #C77B00;
+        page-break-after: avoid;
+      }
+
+      .result-card {
+        background: #fff;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 10px 12px;
+        margin-bottom: 10px;
+        display: grid;
+        grid-template-columns: 28px 40px 1fr 100px 40px;
+        gap: 10px;
+        align-items: center;
+        page-break-inside: avoid;
+        font-size: 11px;
+      }
+
+      /* Highlight first place candidate */
+      .result-card[style*="border-color:rgba"] {
+        background: #FFF9F0 !important;
+        border-color: #FFD699 !important;
+      }
+
+      .result-rank {
+        font-family: 'Cinzel', serif;
+        font-size: 14px;
+        font-weight: 900;
+        color: #333;
+        text-align: center;
+        flex-shrink: 0;
+      }
+
+      .result-rank.first {
+        color: #C77B00;
+        font-size: 16px;
+      }
+
+      .result-pic {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1a3a52, #2d5a8c);
+        border: 2px solid #999;
+        flex-shrink: 0;
+        object-fit: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Cinzel', serif;
+        font-size: 11px;
+        color: #FFD700;
+        font-weight: bold;
+      }
+
+      .result-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .result-name {
+        font-weight: 700;
+        font-size: 12px;
+        color: #000;
+        line-height: 1.2;
+      }
+
+      .result-name[style*="color"] {
+        color: #C77B00 !important;
+        font-weight: 900;
+      }
+
+      .result-meta {
+        font-size: 9px;
+        color: #666;
+        margin-top: 1px;
+      }
+
+      .result-bar-wrap {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 3px;
+      }
+
+      .result-bar-wrap>div:first-child {
+        font-size: 9px;
+        color: #666;
+        text-align: center;
+        font-weight: 600;
+      }
+
+      .result-bar {
+        height: 6px;
+        background: #e0e0e0;
+        border-radius: 3px;
+        overflow: hidden;
+        border: 1px solid #999;
+      }
+
+      .result-bar-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #C77B00, #FFD700, #FFA500) !important;
+        border-radius: 2px;
+      }
+
+      .result-votes {
+        font-family: 'Cinzel', serif;
+        font-size: 14px;
+        font-weight: 900;
+        color: #C77B00;
+        text-align: center;
+        flex-shrink: 0;
+        border-left: 2px solid #e0e0e0;
+        padding-left: 8px;
+      }
+
+      .result-votes[style*="color"] {
+        color: #C77B00 !important;
+      }
+
+      /* Title section */
+      #results-detail>div:first-child {
+        text-align: center;
+        margin-bottom: 20px;
+        page-break-after: avoid;
+        padding-bottom: 12px;
+        border-bottom: 2px solid #C77B00;
+      }
+
+      #results-detail>div:first-child>div:nth-child(1) {
+        font-family: 'Cinzel', serif;
+        font-size: 18px;
+        font-weight: 900;
+        color: #C77B00;
+        margin-bottom: 3px;
+        letter-spacing: 0.5px;
+      }
+
+      #results-detail>div:first-child>div:nth-child(2) {
+        font-size: 11px;
+        color: #555;
+        margin-bottom: 2px;
+      }
+
+      #results-detail>div:first-child>div:nth-child(3) {
+        font-size: 9px;
+        color: #888;
+      }
+
+      .stat-card {
+        border: 1px solid #ddd;
+        background: #fff;
+      }
+
+      .stat-value {
+        color: #C77B00;
+      }
+
+      .stat-label,
+      .nav-group-label {
+        color: #555;
+      }
+
+      th {
+        color: #333;
+        background: #f5f5f5 !important;
+        display: none;
+      }
+
+      td {
+        color: #000;
+      }
+
+      .badge-gold {
+        background: #FFF3CD;
+        color: #856404;
+        border: 1px solid #FFECB5;
+      }
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-top-color: var(--gold);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 24px;
+    }
+
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state p {
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* Image display in table */
+    .thumb {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 1.5px solid var(--border);
+      background: linear-gradient(135deg, var(--navy-l), var(--blue));
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Cinzel', serif;
+      font-size: 12px;
+      color: var(--gold);
+      vertical-align: middle;
+    }
+
+    @media (max-width: 1024px) {
+      .topbar .menu-toggle {
+        display: inline-flex;
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1000;
+        width: var(--sidebar);
+        height: 100vh;
+        transform: translateX(-100%);
+        box-shadow: 12px 0 40px rgba(0, 0, 0, 0.35);
+        background: color-mix(in srgb, var(--bg) 98%, transparent);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(2px);
+        z-index: 999;
+      }
+
+      .sidebar-overlay.active {
+        display: block;
+      }
+
+      .content {
+        padding: 20px 16px 30px;
+      }
+
+      .topbar {
+        padding: 0 16px;
+      }
+
+      .table-card {
+        overflow-x: auto;
+      }
+
+      .table-card table {
+        min-width: 720px;
+      }
+
+      .table-header,
+      .table-footer {
+        padding: 16px 18px;
+      }
+
+      .table-actions {
+        width: 100%;
+        justify-content: flex-start;
+        gap: 8px;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-body {
+        padding: 20px 20px;
+      }
+
+      .modal-footer {
+        padding: 16px 20px 20px;
+      }
+
+      .preview-candidate {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .preview-img {
+        width: 56px;
+        height: 56px;
+      }
+
+      .toast-container {
+        right: 12px;
+        left: 12px;
+        bottom: 16px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .topbar {
+        height: auto;
+        padding: 14px 14px;
+      }
+
+      .topbar-title {
+        font-size: 16px;
+      }
+
+      .topbar-actions {
+        width: 100%;
+        justify-content: space-between;
+        gap: 8px;
+      }
+
+      .content {
+        padding: 18px 14px 26px;
+      }
+
+      .table-card table {
+        min-width: 620px;
+      }
+
+      .table-title {
+        font-size: 14px;
+      }
+
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .table-header {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .table-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+      }
+
+      .form-row {
+        gap: 14px;
+      }
+
+      .modal {
+        width: min(100%, 94vw);
+      }
+
+      .modal-header,
+      .modal-body,
+      .modal-footer {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+    }
+
+    @media (max-width: 520px) {
+      .sidebar {
+        width: 100%;
+      }
+
+      .table-card table {
+        min-width: 520px;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-item {
+        font-size: 13px;
+        padding: 10px 12px;
+      }
+
+      .logout-btn {
+        padding: 12px;
+      }
+    }
+
+    /* ── THEME MANAGER ── */
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 16px;
+      padding: 24px;
+    }
+
+    .theme-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+    }
+
+    .theme-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--border-h);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .theme-card.active {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 1px var(--gold), 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .theme-card-active-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 9px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 100px;
+      letter-spacing: 1px;
+      display: none;
+    }
+
+    .theme-card.active .theme-card-active-badge {
+      display: block;
+    }
+
+    .theme-swatch {
+      height: 80px;
+      display: flex;
+    }
+
+    .theme-swatch-col {
+      flex: 1;
+    }
+
+    .theme-preview-bar {
+      height: 4px;
+      margin: 0 16px;
+      border-radius: 100px;
+      margin-top: -2px;
+    }
+
+    .theme-info {
+      padding: 14px 16px 16px;
+    }
+
+    .theme-name {
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .theme-desc {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .theme-card-actions {
+      padding: 0 16px 14px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-theme-select {
+      flex: 1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border-h);
+      background: transparent;
+      font-family: 'Nunito', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--gold);
+      cursor: pointer;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-theme-select:hover,
+    .theme-card.active .btn-theme-select {
+      background: var(--gold);
+      color: var(--navy);
+      border-color: var(--gold);
+    }
+
+    .btn-theme-preview {
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: transparent;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-muted);
+    }
+
+    .btn-theme-preview:hover {
+      background: var(--surface2);
+      color: var(--text);
+    }
+
+    .theme-manager-header {
+      padding: 24px 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .live-preview-banner {
+      background: rgba(245, 166, 35, 0.1);
+      border: 1px solid rgba(245, 166, 35, 0.25);
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold);
+      display: none;
+      align-items: center;
+      gap: 8px;
+      margin: 0 24px 16px;
+    }
+
+    .live-preview-banner.visible {
+      display: flex;
+    }
+
+    @media (max-width: 600px) {
+      .themes-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        padding: 16px;
+      }
+
+      .theme-info {
+        padding: 10px 12px 12px;
+      }
+
+      .theme-card-actions {
+        padding: 0 12px 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <img class="brand-logo"
+        src="https://panel.rathamcloud.xyz/extensions/resourcemanager/uploads/1775581335_images (1).jpg"
+        alt="AKR Academy School Logo">
+      <div class="brand-text">
+        AKR Academy
+        <small>Admin Portal</small>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Overview</div>
+      <div class="nav-item active" onclick="showPanel('overview')">
+        <span class="nav-icon">📊</span> Dashboard
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Manage</div>
+      <div class="nav-item" onclick="showPanel('categories')">
+        <span class="nav-icon">🏷️</span> Categories
+      </div>
+      <div class="nav-item" onclick="showPanel('candidates')">
+        <span class="nav-icon">👤</span> Candidates
+      </div>
+      <div class="nav-item" onclick="showPanel('booths')">
+        <span class="nav-icon">🗳️</span> Polling Booths
+      </div>
+      <div class="nav-item" onclick="showPanel('booth-stats')">
+        <span class="nav-icon">♣️</span> Booth Activities
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Results</div>
+      <div class="nav-item" onclick="showPanel('results')">
+        <span class="nav-icon">🏆</span> View Results
+      </div>
+      <div class="nav-item" onclick="showPanel('activity')">
+        <span class="nav-icon">⚡</span> Activity Feed
+      </div>
+      <div class="nav-item" onclick="showPanel('audit')">
+        <span class="nav-icon">📋</span> Admin Log
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Appearance</div>
+      <div class="nav-item" id="nav-themes" onclick="showPanel('themes')">
+        <span class="nav-icon">🎨</span> Theme Manager
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Settings</div>
+      <div class="nav-item" onclick="showPanel('settings')">
+        <span class="nav-icon">⚙️</span> System Settings
+      </div>
+      <div class="nav-item" onclick="showPanel('admins')">
+        <span class="nav-icon">🔐</span> Admin Users
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="admin-info">
+        <div class="admin-avatar" id="admin-avatar">A</div>
+        <div>
+          <div class="admin-name" id="admin-username">Loading...</div>
+          <div class="admin-role">Administrator</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="window.location.href='/admin/logout'">⬅ Logout</button>
+    </div>
+  </aside>
+
+  <div class="sidebar-overlay" onclick="toggleSidebar(event)"></div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <button type="button" class="menu-toggle btn btn-outline btn-sm" onclick="toggleSidebar(event)">☰ Menu</button>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div style="display:flex;gap:8px">
+        <a href="/" target="_blank" class="btn btn-outline btn-sm">🌐 View Site</a>
+        <a href="/results" target="_blank" class="btn btn-outline btn-sm">📊 Public Results</a>
+      </div>
+    </div>
+
+    <div class="content">
+      <!-- OVERVIEW PANEL -->
+      <div class="panel active" id="panel-overview">
+        <div class="stat-grid" id="stat-grid">
+          <div class="stat-card">
+            <div class="stat-icon">🗳️</div>
+            <div class="stat-value skeleton" style="width:60px;height:36px;display:inline-block"></div>
+            <div class="stat-label">Total Votes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👤</div>
+            <div class="stat-value skeleton" style="width:60px;height:36px;display:inline-block"></div>
+            <div class="stat-label">Candidates</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">🏷️</div>
+            <div class="stat-value skeleton" style="width:60px;height:36px;display:inline-block"></div>
+            <div class="stat-label">Categories</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📍</div>
+            <div class="stat-value skeleton" style="width:60px;height:36px;display:inline-block"></div>
+            <div class="stat-label">Active Booths</div>
+          </div>
+        </div>
+
+        <div class="table-card" style="margin-bottom: 24px;">
+          <div class="table-header">
+            <div class="table-title">📈 Top Candidates Overview</div>
+          </div>
+          <div style="padding:20px; height: 300px; display: flex; justify-content: center;">
+            <canvas id="overviewChart"></canvas>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">🏆 Live Results</div>
+            <div class="table-actions">
+              <button class="btn btn-primary btn-sm" onclick="loadOverview()">↺ Refresh</button>
+            </div>
+          </div>
+          <div style="padding:20px" id="results-preview">
+            <div class="empty-state">
+              <div class="icon">📊</div>
+              <p>Loading results...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CATEGORIES PANEL -->
+      <div class="panel" id="panel-categories">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">🏷️ Categories</div>
+            <div class="table-actions">
+              <button class="btn btn-danger btn-sm" onclick="bulkDeleteCategories()">🗑 Bulk Delete</button>
+              <button class="btn btn-primary" onclick="openCategoryModal()">+ Add Category</button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th><input type="checkbox" class="cb" id="cat-all-cb" onchange="toggleAll('cat-cb')"></th>
+                <th>#</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Order</th>
+                <th>Candidates</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="cat-tbody">
+              <tr>
+                <td colspan="7" style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-footer">
+            <div id="cat-pagination" class="pagination"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CANDIDATES PANEL -->
+      <div class="panel" id="panel-candidates">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">👤 Candidates</div>
+            <div class="table-actions">
+              <button class="btn btn-danger btn-sm" onclick="resetAllVotes()">🔄 Reset All Votes</button>
+              <button class="btn btn-danger btn-sm" onclick="bulkDeleteCandidates()">🗑 Bulk Delete</button>
+              <button class="btn btn-primary" onclick="openCandidateModal()">+ Add Candidate</button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th><input type="checkbox" class="cb" id="cand-all-cb" onchange="toggleAll('cand-cb')"></th>
+                <th>Photo</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Class</th>
+                <th>Section</th>
+                <th>Votes</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="cand-tbody">
+              <tr>
+                <td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-footer">
+            <div id="cand-pagination" class="pagination"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOOTHS PANEL -->
+      <div class="panel" id="panel-booths">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">🗳️ Polling Booths</div>
+            <div class="table-actions">
+              <button class="btn btn-danger btn-sm" onclick="bulkDeleteBooths()">🗑 Bulk Delete</button>
+              <button class="btn btn-primary" onclick="openBoothModal()">+ Create Booth</button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th><input type="checkbox" class="cb" id="booth-all-cb" onchange="toggleAll('booth-cb')"></th>
+                <th>Booth Name</th>
+                <th>Auth Type</th>
+                <th>Code / User</th>
+                <th>Max Votes</th>
+                <th>Votes Received</th>
+                <th>Booth Expires</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="booth-tbody">
+              <tr>
+                <td colspan="9" style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="table-footer">
+            <div id="booth-pagination" class="pagination"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESULTS PANEL -->
+      <div class="panel" id="panel-results">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">🏆 Election Results</div>
+            <div class="table-actions">
+              <button class="btn btn-outline btn-sm" onclick="exportExcel()">📥 Export</button>
+              <button class="btn btn-primary btn-sm" onclick="printResults()">🖨️ Print A4</button>
+            </div>
+          </div>
+          <div id="results-detail" style="padding:20px"></div>
+        </div>
+      </div>
+
+      <!-- SETTINGS PANEL -->
+      <div class="panel" id="panel-settings">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">⚙️ System Settings</div>
+            <div class="table-actions">
+              <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+            </div>
+          </div>
+          <div style="padding:20px">
+            <div class="form-group">
+              <label class="form-label">Site Name</label>
+              <input type="text" class="form-control" id="setting-site-name"
+                placeholder="e.g. AKR Academy Voting System">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Site Logo</label>
+              <div class="file-input-wrapper">
+                <input type="file" id="setting-site-logo" accept="image/*" onchange="previewLogo(this)">
+                <div>🏛️ Click to upload site logo</div>
+                <div class="file-hint">PNG, JPG up to 5MB</div>
+                <div class="file-preview" id="logo-preview"></div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Vote Interval (seconds)</label>
+              <input type="number" class="form-control" id="setting-vote-interval" min="1" max="300" placeholder="10">
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Time between votes (prevents rapid
+                voting)</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Disable Login Booth</label>
+              <select class="form-control" id="setting-disable-login-booth">
+                <option value="false">Enable</option>
+                <option value="true">Disable</option>
+              </select>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px">When disabled, booths cannot be used
+                for voting</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Maintenance Mode</label>
+              <select class="form-control" id="setting-maintenance">
+                <option value="false">Off</option>
+                <option value="true">On</option>
+              </select>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px">When on, site shows maintenance message
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Public Results Page</label>
+              <select class="form-control" id="setting-public-results">
+                <option value="false">Hidden (Admin only)</option>
+                <option value="true">Public (anyone can view /results)</option>
+              </select>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Controls whether the /results page is
+                publicly accessible</div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Vote Success Sound</label>
+              <select class="form-control" id="setting-vote-sound">
+                <option value="false">Off</option>
+                <option value="true">On (beep after each vote)</option>
+              </select>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Plays a confirmation beep sound when a
+                voter successfully submits their vote — useful for staff monitoring</div>
+            </div>
+
+            <!-- NEW ELECTION CONFIGS -->
+            <div class="form-group"
+              style="padding: 16px; background: rgba(245, 166, 35, 0.1); border: 1px solid var(--gold); border-radius: var(--radius); margin-bottom: 24px; margin-top: 16px;">
+              <label class="form-label" style="color: var(--gold);">⚡ Election Process Phase</label>
+              <select class="form-control" id="setting-election-phase" style="border-color: var(--gold);">
+                <option value="preparing">Selecting Candidates (Not Started)</option>
+                <option value="voting">Start Voting (Active)</option>
+                <option value="results">Declare Result (Publicly Available)</option>
+                <option value="completed">Election Over (Maintenance / Closed)</option>
+              </select>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:8px"><strong>Central Control:</strong>
+                Changes how the entire system behaves for voters.</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Index Login Layout Style</label>
+              <select class="form-control" id="setting-login-screen-type">
+                <option value="pin">PIN Pad (4-Digit Number Pad)</option>
+                <option value="userpass">Username & Password Inputs</option>
+              </select>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Determines what layout voters see on
+                the home page</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Show Votes Left</label>
+              <select class="form-control" id="setting-show-votes-left">
+                <option value="false">Off (Default)</option>
+                <option value="true">On</option>
+              </select>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px">Displays remaining booth votes to
+                voters in the header</div>
+            </div>
+
+            <div style="margin-top:32px;padding-top:24px;border-top:1px solid rgba(231,76,60,0.2)">
+              <div
+                style="font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#E74C3C;margin-bottom:12px">
+                ⚠️ DANGER ZONE</div>
+              <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+                <div style="flex:1;min-width:200px">
+                  <div style="font-size:13px;font-weight:700;color:var(--text)">Reset All Votes</div>
+                  <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Permanently delete all voting data.
+                    This cannot be undone.</div>
+                </div>
+                <button class="btn btn-danger" onclick="resetAllVotes()" style="white-space:nowrap">🔄 Reset All
+                  Votes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMINS PANEL -->
+      <div class="panel" id="panel-admins">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">🔐 Admin Users</div>
+            <div class="table-actions">
+              <button class="btn btn-primary" onclick="openAdminModal()">+ Add Admin</button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th>Created</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="admin-tbody">
+              <tr>
+                <td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- THEME MANAGER PANEL -->
+      <div class="panel" id="panel-themes">
+        <div class="table-card">
+          <div class="theme-manager-header">
+            <div>
+              <div class="table-title" style="font-size:15px">🎨 Theme Manager</div>
+              <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Choose a theme — applied instantly
+                across all pages</div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center" id="theme-header-actions">
+              <button class="btn btn-outline btn-sm" id="theme-preview-cancel" onclick="cancelThemePreview()"
+                style="display:none">✕ Cancel Preview</button>
+              <button class="btn btn-primary" id="theme-apply-btn" onclick="applySelectedTheme()"
+                style="display:none">Apply Theme</button>
+            </div>
+          </div>
+
+          <div class="live-preview-banner" id="live-preview-banner">
+            📊 You are previewing a theme. Click <strong>Apply Theme</strong> to save, or <strong>Cancel
+              Preview</strong> to revert.
+          </div>
+
+          <div class="themes-grid" id="themes-grid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- BOOTH STATS PANEL -->
+      <div class="panel" id="panel-booth-stats">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">🗳️ Votes by Polling Booth</div>
+            <div class="table-actions">
+              <span id="booth-stats-live-badge"
+                style="font-size:11px;font-weight:700;color:var(--success);display:none">● Live</span>
+              <button class="btn btn-primary btn-sm" onclick="loadBoothStats()">↺ Refresh</button>
+            </div>
+          </div>
+          <div id="booth-stats-container" style="padding:24px">
+            <div class="empty-state">
+              <div class="icon">🗳️</div>
+              <p>Loading booth data...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACTIVITY FEED PANEL -->
+      <div class="panel" id="panel-activity">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">⚡ Live Activity Feed</div>
+            <div class="table-actions">
+              <span style="font-size:11px;font-weight:700;color:var(--success)">● Refreshes every 10s</span>
+            </div>
+          </div>
+          <div id="activity-container" style="padding:0">
+            <div class="empty-state">
+              <div class="icon">⚡</div>
+              <p>Loading activity...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUDIT LOG PANEL -->
+      <div class="panel" id="panel-audit">
+        <div class="table-card">
+          <div class="table-header">
+            <div class="table-title">📋 Admin Audit Log</div>
+            <div class="table-actions">
+              <button class="btn btn-outline btn-sm" onclick="loadAuditLog()">↺ Refresh</button>
+            </div>
+          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Admin</th>
+                <th>Action</th>
+                <th>Details</th>
+              </tr>
+            </thead>
+            <tbody id="audit-tbody">
+              <tr>
+                <td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted)">Loading...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+
+  <!-- CATEGORY MODAL -->
+  <div class="modal-overlay" id="cat-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="cat-modal-title">Add Category</div>
+        <button class="modal-close" onclick="closeModal('cat-modal')">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="cat-id">
+        <div class="form-group">
+          <label class="form-label">Category Name</label>
+          <input type="text" class="form-control" id="cat-name" placeholder="e.g. Head Boy"
+            oninput="updateCategoryPreview()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description (optional)</label>
+          <input type="text" class="form-control" id="cat-desc" placeholder="Brief description"
+            oninput="updateCategoryPreview()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Display Order</label>
+          <input type="number" class="form-control" id="cat-order" value="0" min="0">
+        </div>
+        <div class="preview-card visible">
+          <div class="preview-label">Preview</div>
+          <div style="display:flex;align-items:center;gap:12px">
+            <div
+              style="width:40px;height:40px;background:linear-gradient(135deg,var(--gold-d),var(--gold));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px">
+              👑</div>
+            <div>
+              <div style="font-family:'Cinzel',serif;font-weight:700" id="cat-preview-name">Category Name</div>
+              <div style="font-size:11px;color:var(--text-muted)" id="cat-preview-desc">Description</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('cat-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveCategory()">Save Category</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CANDIDATE MODAL -->
+  <div class="modal-overlay" id="cand-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="cand-modal-title">Add Candidate</div>
+        <button class="modal-close" onclick="closeModal('cand-modal')">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="cand-id">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="cand-name" placeholder="Candidate full name"
+            oninput="updateCandPreview()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Category</label>
+          <select class="form-control" id="cand-cat" onchange="updateCandPreview()">
+            <option value="">Select category...</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Class</label>
+            <select class="form-control" id="cand-class" onchange="updateCandPreview()">
+              <option value="XI">XI</option>
+              <option value="XII">XII</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Section</label>
+            <input type="text" class="form-control" id="cand-section" placeholder="e.g. A"
+              oninput="updateCandPreview()">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Flag / Banner (optional)</label>
+          <div class="file-input-wrapper" id="flag-wrapper" style="cursor:pointer" onclick="document.getElementById('cand-flag').click()">
+            <input type="file" id="cand-flag" accept="image/*" style="display:none" onchange="previewFlag(this)">
+            <div>🏳️ Click to upload flag / banner image</div>
+            <div class="file-hint">PNG, JPG up to 5MB — will open crop tool</div>
+          </div>
+          <div id="flag-preview-area" style="margin-top:10px;display:none;align-items:center;gap:12px;flex-wrap:wrap">
+            <img id="flag-preview-img" style="height:52px;border-radius:6px;border:1.5px solid var(--border);object-fit:contain;background:repeating-conic-gradient(#555 0% 25%,#333 0% 50%) 0 0/12px 12px" alt="flag preview">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted)">
+                <input type="checkbox" id="flag-remove-bg" onchange="applyFlagRemoveBg()" style="accent-color:var(--gold);width:14px;height:14px"> Remove Background
+              </label>
+              <button class="btn btn-outline btn-sm" onclick="document.getElementById('cand-flag').click()" type="button">↺ Change</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Profile Photo</label>
+          <div class="file-input-wrapper" id="pic-wrapper" style="cursor:pointer" onclick="document.getElementById('cand-pic').click()">
+            <input type="file" id="cand-pic" accept="image/*" style="display:none" onchange="previewPic(this)">
+            <div>📷 Click to upload profile photo</div>
+            <div class="file-hint">PNG, JPG up to 5MB — will open crop tool</div>
+          </div>
+          <div id="pic-preview-area" style="margin-top:10px;display:none;align-items:center;gap:12px;flex-wrap:wrap">
+            <img id="pic-preview-img" style="height:60px;width:60px;border-radius:50%;border:2px solid var(--gold);object-fit:cover;background:repeating-conic-gradient(#555 0% 25%,#333 0% 50%) 0 0/12px 12px" alt="photo preview">
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <label style="display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;cursor:pointer;color:var(--text-muted)">
+                <input type="checkbox" id="pic-remove-bg" onchange="applyPicRemoveBg()" style="accent-color:var(--gold);width:14px;height:14px"> Remove Background
+              </label>
+              <button class="btn btn-outline btn-sm" onclick="document.getElementById('cand-pic').click()" type="button">↺ Change</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="preview-card" id="cand-preview-card">
+          <div class="preview-label">Preview</div>
+          <div class="preview-candidate">
+            <div class="preview-img" id="cand-prev-img">?</div>
+            <div class="preview-info">
+              <div class="name" id="cand-prev-name">Candidate Name</div>
+              <div class="meta" id="cand-prev-meta">Class - Section</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('cand-modal')">Cancel</button>
+        <button class="btn btn-primary" onclick="saveCandidate()">Save Candidate</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOTH MODAL -->
+  <div class="modal-overlay" id="booth-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <div class="modal-title" id="booth-modal-title">Create Polling Booth</div>
+        <button class="modal-close" onclick="closeModal('booth-modal')">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="booth-id">
+        <div class="form-group">
+          <label class="form-label">Booth Name</label>
+          <input type="text" class="form-control" id="booth-name" placeholder="e.g. Booth A - Ground Floor">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Authentication Type</label>
+          <select class="form-control" id="booth-auth-type" onchange="toggleBoothAuthType()">
+            <option value="pin">4-Digit PIN</option>
+            <option value="userpass">Username &amp; Password</option>
+          </select>
+        </div>
+
+        <div id="booth-pin-group">
+          <div class="form-group">
+            <label class="form-label">PIN (4 digits)</label>
+            <div style="display:flex;gap:10px;align-items:center">
+              <input type="text" class="form-control" id="booth-pin" placeholder="0000" maxlength="4" pattern="\d{4}"
+                style="letter-spacing:8px;font-family:'Cinzel',serif;font-size:20px">
+              <button class="btn btn-outline" type="button" onclick="generatePin()"
+                style="white-space:nowrap;flex-shrink:0">🎲
+                Random</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="booth-userpass-group" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <input type="text" class="form-control" id="booth-username" placeholder="e.g. grade10">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="text" class="form-control" id="booth-password" placeholder="e.g. Vote@2026">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Max Votes Allowed (Optional)</label>
+          <input type="number" class="form-control" id="booth-max-votes" placeholder="Leave blank for unlimited"
+            min="1">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Expires At (optional)</label>
+          <input type="datetime-local" class="form-control" id="booth-expires">
+        </div>
+
+        <div class="preview-card visible" style="text-align:center;">
+          <div class="preview-label">Booth Preview</div>
+          <div style="display:flex;align-items:center;justify-content:center;gap:12px">
+            <div style="font-size:32px">🗳️</div>
+            <div>
+              <div style="font-family:'Cinzel',serif;font-weight:700" id="booth-preview-name">Booth Name</div>
+              <div style="font-size:12px;color:var(--text-muted)">
+                <span id="booth-preview-label">PIN:</span>
+                <strong id="booth-preview-pin" style="color:var(--gold);letter-spacing:3px">----</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" type="button" onclick="closeModal('booth-modal')">Cancel</button>
+        <button class="btn btn-primary" type="button" onclick="saveBooth()">Save Booth</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADMIN USER MODAL -->
+  <div class="modal-overlay" id="admin-modal">
+    <div class="modal" style="width:400px">
+      <div class="modal-header">
+        <div class="modal-title">Add Admin User</div>
+        <button class="modal-close" onclick="closeModal('admin-modal')">×</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="admin-id">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" class="form-control" id="new-admin-username" placeholder="Enter username">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" class="form-control" id="new-admin-password"
+            placeholder="Enter strong password (leave blank to keep current)">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('admin-modal')">Cancel</button>
+        <button class="btn btn-primary" id="admin-save-btn" onclick="saveAdmin()">Create Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script>
+    // ===== STATE =====
+    let allCategories = [];
+    let allCandidates = [];
+    let allBooths = [];
+    let allAdmins = [];
+    let currentAdminId = null;
+    let currentAdminUsername = '';
+    let voteWaitTimeSeconds = 10;
+
+    const PAGE_SIZE = 10;
+    let categoryPage = 1;
+    let candidatePage = 1;
+    let boothPage = 1;
+
+    function paginate(items, page) {
+      const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+      page = Math.min(Math.max(page, 1), totalPages);
+      const start = (page - 1) * PAGE_SIZE;
+      return {
+        pageItems: items.slice(start, start + PAGE_SIZE),
+        page,
+        totalPages
+      };
+    }
+
+    function changePage(section, delta) {
+      if (section === 'categories') {
+        categoryPage = Math.max(1, Math.min(categoryPage + delta, Math.max(1, Math.ceil(allCategories.length / PAGE_SIZE))));
+        renderCategories();
+      } else if (section === 'candidates') {
+        candidatePage = Math.max(1, Math.min(candidatePage + delta, Math.max(1, Math.ceil(allCandidates.length / PAGE_SIZE))));
+        renderCandidates();
+      } else if (section === 'booths') {
+        boothPage = Math.max(1, Math.min(boothPage + delta, Math.max(1, Math.ceil(allBooths.length / PAGE_SIZE))));
+        renderBooths();
+      }
+    }
+
+    function renderPagination(containerId, page, totalPages, section) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      if (totalPages <= 1) {
+        container.innerHTML = '';
+        return;
+      }
+      container.innerHTML = `
+    <div class="pagination-info">Page ${page} of ${totalPages}</div>
+    <div class="pagination-buttons">
+      <button class="btn btn-outline btn-sm" ${page === 1 ? 'disabled' : ''} onclick="changePage('${section}', -1)">← Prev</button>
+      <button class="btn btn-outline btn-sm" ${page === totalPages ? 'disabled' : ''} onclick="changePage('${section}', 1)">Next →</button>
+    </div>
+  `;
+    }
+
+    // ===== INIT =====
+    window.addEventListener('load', async () => {
+      loadAndApplyTheme();
+      await loadSession();
+      await loadOverview();
+      await loadVoteWaitTime();
+      await loadCategories();
+      await loadCandidates();
+      await loadBooths();
+      await loadAdmins();
+      const pageContent = document.querySelector('.content');
+      if (pageContent) {
+        pageContent.addEventListener('click', () => {
+          const sidebar = document.querySelector('.sidebar');
+          if (sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+          }
+        });
+      }
+    });
+
+    function toggleSidebar(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.sidebar-overlay');
+      if (!sidebar) return;
+      sidebar.classList.toggle('open');
+      if (overlay) overlay.classList.toggle('active');
+    }
+
+    async function loadSession() {
+      try {
+        const res = await fetch('/api/admin/session');
+        const d = await res.json();
+        if (d.success) {
+          currentAdminId = d.adminId;
+          currentAdminUsername = d.username;
+          document.getElementById('admin-username').textContent = d.username;
+          document.getElementById('admin-avatar').textContent = d.username.charAt(0).toUpperCase();
+        }
+      } catch (e) { }
+    }
+
+    async function loadVoteWaitTime() {
+      try {
+        const res = await fetch('/api/vote-wait-time', { credentials: 'same-origin' });
+        const d = await res.json();
+        if (!d.success) return;
+        voteWaitTimeSeconds = d.seconds;
+        const input = document.getElementById('wait-time-input');
+        if (input) input.value = voteWaitTimeSeconds;
+      } catch (e) { }
+    }
+
+    async function saveWaitTime() {
+      try {
+        const input = document.getElementById('wait-time-input');
+        const seconds = parseInt(input.value, 10);
+        if (!seconds || seconds < 1 || seconds > 60) return toast('Enter a value between 1 and 60 seconds', 'error');
+        const res = await fetch('/api/admin/settings/vote-wait-time', {
+          method: 'PUT',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ seconds })
+        });
+        const d = await res.json();
+        if (!d.success) return toast(d.message || 'Unable to save wait time', 'error');
+        voteWaitTimeSeconds = d.seconds;
+        toast('Vote wait time updated', 'success');
+      } catch (e) {
+        toast('Save failed. Try again.', 'error');
+      }
+    }
+
+    // ===== PANEL =====
+    const PANEL_TITLES = {
+      overview: 'Dashboard', categories: 'Categories', candidates: 'Candidates',
+      booths: 'Polling Booths', results: 'Election Results', settings: 'System Settings', admins: 'Admin Users',
+      'booth-stats': 'Booth Breakdown', activity: 'Activity Feed', audit: 'Audit Log',
+      themes: 'Theme Manager'
+    };
+
+    function showPanel(name) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.getElementById(`panel-${name}`).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n => {
+        if (n.textContent.toLowerCase().includes(PANEL_TITLES[name]?.toLowerCase().split(' ')[0] || name)) {
+          n.classList.add('active');
+        }
+      });
+      document.getElementById('topbar-title').textContent = PANEL_TITLES[name] || name;
+      // Close sidebar on mobile after panel selection
+      const sidebar = document.querySelector('.sidebar');
+      const overlay = document.querySelector('.sidebar-overlay');
+      if (sidebar && sidebar.classList.contains('open') && window.innerWidth <= 1024) {
+        sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('active');
+      }
+      if (name === 'results') loadResultsDetail();
+      if (name === 'settings') loadSettings();
+      if (name === 'booth-stats') loadBoothStats();
+      if (name === 'activity') loadActivityFeed();
+      if (name === 'audit') loadAuditLog();
+      if (name === 'themes') renderThemeGrid();
+    }
+
+    // ===== OVERVIEW =====
+    async function loadOverview() {
+      try {
+        const res = await fetch('/api/admin/overview');
+        const d = await res.json();
+        if (!d.success) return;
+        const { stats, candidateResults } = d;
+
+        // Render Chart
+        renderOverviewChart(candidateResults);
+
+        document.getElementById('stat-grid').innerHTML = `
+      <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value">${stats.totalMembersVoted}</div><div class="stat-label">Members Voted</div></div>
+      <div class="stat-card"><div class="stat-icon">🗳️</div><div class="stat-value">${stats.totalVotes}</div><div class="stat-label">Total Votes</div></div>
+      <div class="stat-card"><div class="stat-icon">👤</div><div class="stat-value">${stats.totalCandidates}</div><div class="stat-label">Candidates</div></div>
+      <div class="stat-card"><div class="stat-icon">🏷️</div><div class="stat-value">${stats.totalCategories}</div><div class="stat-label">Categories</div></div>
+      <div class="stat-card"><div class="stat-icon">📍</div><div class="stat-value">${stats.totalBooths}</div><div class="stat-label">Active Booths</div></div>
+    `;
+
+        // Group by category
+        const grouped = {};
+        candidateResults.forEach(c => {
+          if (!grouped[c.category_name]) grouped[c.category_name] = [];
+          grouped[c.category_name].push(c);
+        });
+
+        let html = '';
+        for (const [cat, candidates] of Object.entries(grouped)) {
+          const maxVotes = Math.max(...candidates.map(c => c.vote_count), 1);
+          html += `<div style="margin-bottom:20px"><div style="font-family:'Cinzel',serif;font-weight:700;color:var(--gold);margin-bottom:10px;font-size:13px">🏷️ ${escHtml(cat)}</div>`;
+          candidates.forEach((c, i) => {
+            const pct = Math.round((c.vote_count / maxVotes) * 100);
+            html += `
+          <div class="result-card">
+            <div class="result-rank ${i === 0 ? 'first' : ''}">${i === 0 ? '🥇' : i + 1}</div>
+            ${c.profile_pic
+                ? `<img src="/uploads/${c.profile_pic}" class="result-pic" onerror="this.outerHTML='<div class=result-pic>${c.name.charAt(0)}</div>'">`
+                : `<div class="result-pic">${c.name.charAt(0)}</div>`}
+            <div class="result-info">
+              <div class="result-name">${escHtml(c.name)}</div>
+              <div class="result-meta">Class ${escHtml(c.class)} · Sec ${escHtml(c.section)}</div>
+            </div>
+            <div class="result-bar-wrap">
+              <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px">${pct}%</div>
+              <div class="result-bar"><div class="result-bar-fill" style="width:${pct}%"></div></div>
+            </div>
+            <div class="result-votes">${c.vote_count}</div>
+          </div>`;
+          });
+          html += '</div>';
+        }
+        document.getElementById('results-preview').innerHTML = html || '<div class="empty-state"><div class="icon">🗳️</div><p>No votes yet. Results will appear here once voting begins.</p></div>';
+      } catch (e) { console.error(e); }
+    }
+
+    let overviewChartInstance = null;
+    function renderOverviewChart(candidates) {
+      const ctx = document.getElementById('overviewChart');
+      if (!ctx) return;
+
+      if (overviewChartInstance) {
+        overviewChartInstance.destroy();
+      }
+
+      if (!candidates || candidates.length === 0) return;
+
+      const topCands = [...candidates].sort((a, b) => b.vote_count - a.vote_count).slice(0, 10);
+      const labels = topCands.map(c => c.name.split(' ')[0]); // Use first name for compactness
+      const data = topCands.map(c => c.vote_count);
+
+      const style = getComputedStyle(document.documentElement);
+      const textColor = style.getPropertyValue('--text').trim() || '#333';
+      const goldColor = style.getPropertyValue('--gold').trim() || '#F5A623';
+      const border = style.getPropertyValue('--border').trim() || 'rgba(0,0,0,0.1)';
+
+      overviewChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Votes',
+            data: data,
+            backgroundColor: goldColor,
+            borderRadius: 6,
+            maxBarThickness: 30
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title: function (context) { return topCands[context[0].dataIndex].name; },
+                afterTitle: function (context) { return topCands[context[0].dataIndex].category_name; }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1, color: textColor },
+              grid: { color: border }
+            },
+            x: {
+              ticks: { color: textColor },
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    async function loadResultsDetail() {
+      const res = await fetch('/api/admin/overview');
+      const d = await res.json();
+      if (!d.success) return;
+      const { candidateResults } = d;
+
+      const grouped = {};
+      candidateResults.forEach(c => {
+        if (!grouped[c.category_name]) grouped[c.category_name] = [];
+        grouped[c.category_name].push(c);
+      });
+
+      let html = `<div style="text-align:center;margin-bottom:32px">
+    <div style="font-family:'Cinzel',serif;font-size:24px;font-weight:900;color:var(--gold)">AKR ACADEMY SCHOOL</div>
+    <div style="font-size:14px;color:var(--text-muted);margin-top:4px">Student Elections — Official Results</div>
+    <div style="font-size:12px;color:var(--text-dim);margin-top:2px">${new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+  </div>`;
+
+      for (const [cat, candidates] of Object.entries(grouped)) {
+        const maxVotes = Math.max(...candidates.map(c => c.vote_count), 1);
+        html += `<div style="margin-bottom:28px"><div style="font-family:'Cinzel',serif;font-weight:700;color:var(--gold);font-size:16px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">${escHtml(cat)}</div>`;
+        candidates.forEach((c, i) => {
+          const pct = Math.round((c.vote_count / maxVotes) * 100);
+          html += `
+        <div class="result-card" style="${i === 0 ? 'border-color:rgba(245,166,35,0.4);background:rgba(245,166,35,0.06)' : ''}">
+          <div class="result-rank ${i === 0 ? 'first' : ''}">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</div>
+          ${c.profile_pic
+              ? `<img src="/uploads/${c.profile_pic}" class="result-pic" style="${i === 0 ? 'border-color:var(--gold)' : ''}">`
+              : `<div class="result-pic">${c.name.charAt(0)}</div>`}
+          <div class="result-info">
+            <div class="result-name" style="${i === 0 ? 'color:var(--gold)' : ''}">${escHtml(c.name)}</div>
+            <div class="result-meta">Class ${escHtml(c.class)} · Section ${escHtml(c.section)}</div>
+          </div>
+          <div class="result-bar-wrap">
+            <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px">${pct}% of max</div>
+            <div class="result-bar"><div class="result-bar-fill" style="width:${pct}%;${i === 0 ? 'background:linear-gradient(90deg,#C77B00,#F5A623,#FFD166)' : ''}"></div></div>
+          </div>
+          <div class="result-votes" style="${i === 0 ? 'color:var(--gold)' : ''}">${c.vote_count}</div>
+        </div>`;
+        });
+        html += '</div>';
+      }
+      document.getElementById('results-detail').innerHTML = html || '<div class="empty-state"><div class="icon">🗳️</div><p>No results yet.</p></div>';
+    }
+
+    async function printResults() {
+      const res = await fetch('/api/admin/overview');
+      const d = await res.json();
+      if (!d.success) return toast('Failed to load results', 'error');
+
+      const candidateResults = d.candidateResults;
+      const totalVotes = d.stats.totalVotes;
+      const totalCandidates = d.stats.totalCandidates;
+      const totalMembersVoted = d.stats.totalMembersVoted;
+
+      // Group by category
+      const grouped = {};
+      candidateResults.forEach(function (c) {
+        if (!grouped[c.category_name]) grouped[c.category_name] = [];
+        grouped[c.category_name].push(c);
+      });
+
+      // Build categories HTML
+      var catsHtml = '';
+      Object.keys(grouped).forEach(function (cat) {
+        var allCands = grouped[cat];
+
+        var winnerInfo = '';
+        if (allCands.length > 0) {
+          var winner = allCands[0];
+          if (allCands.length > 1) {
+            var margin = winner.vote_count - allCands[1].vote_count;
+            if (margin > 0) {
+              winnerInfo = '<div class="winner-margin">• <strong>' + escHtml(winner.name) + '</strong> Has Won The Election With Clear Majority (' + margin + ' votes)</div>';
+            } else {
+              winnerInfo = '<div class="winner-margin">• Tie for the first place!</div>';
+            }
+          } else {
+            winnerInfo = '<div class="winner-margin">• <strong>' + escHtml(winner.name) + '</strong> Has Won The Election Unopposed!</div>';
+          }
+        }
+
+        catsHtml += '<div class="cat-section">' +
+          '<div class="cat-name">' + escHtml(cat) + '</div>' +
+          '<table>' +
+          '<thead><tr><th>Rank</th><th>Candidate Name</th><th>Class</th><th>Section</th><th>Votes</th></tr></thead>' +
+          '<tbody>' +
+          allCands.map(function (c, i) {
+            var medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : '';
+            return '<tr class="' + (i === 0 ? 'winner' : '') + '">' +
+              '<td class="rank">' + medal + ' ' + (i + 1) + '</td>' +
+              '<td class="name">' + escHtml(c.name) + '</td>' +
+              '<td>' + escHtml(c.class) + '</td>' +
+              '<td>' + escHtml(c.section) + '</td>' +
+              '<td class="votes">' + c.vote_count + '</td>' +
+              '</tr>';
+          }).join('') +
+          '</tbody>' +
+          '</table>' +
+          winnerInfo +
+          '</div>';
+      });
+
+      var dateStr = new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+      var timeStr = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+      var html = '<!DOCTYPE html><html><head><meta charset="UTF-8">' +
+        '<title>AKR Academy - Election Results</title>' +
+        '<style>' +
+        '@page { size: A4; margin: 20mm 15mm; }' +
+        '* { margin:0; padding:0; box-sizing:border-box; }' +
+        'body { font-family: "Segoe UI", Arial, sans-serif; color: #222; background:#fff; padding:0; }' +
+        '.header { text-align:center; margin-bottom:28px; padding-bottom:18px; border-bottom:3px double #C77B00; }' +
+        '.header .school { font-size:28px; font-weight:900; color:#0A1A4E; letter-spacing:1px; }' +
+        '.header .subtitle { font-size:14px; color:#555; margin-top:4px; }' +
+        '.header .date { font-size:12px; color:#888; margin-top:4px; }' +
+        '.summary { display:flex; justify-content:center; gap:40px; margin-bottom:28px; }' +
+        '.summary-box { text-align:center; padding:16px 28px; border:2px solid #C77B00; border-radius:10px; min-width:160px; }' +
+        '.summary-box .num { font-size:32px; font-weight:900; color:#0A1A4E; }' +
+        '.summary-box .lbl { font-size:11px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:1.5px; margin-top:2px; }' +
+        '.cat-section { margin-bottom:24px; page-break-inside:avoid; }' +
+        '.cat-name { font-size:16px; font-weight:800; color:#0A1A4E; padding:8px 12px; background:#F0E6D0; border-radius:6px; margin-bottom:10px; letter-spacing:0.5px; }' +
+        'table { width:100%; border-collapse:collapse; font-size:13px; }' +
+        'thead th { background:#0A1A4E; color:#fff; padding:8px 12px; text-align:left; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; }' +
+        'tbody td { padding:10px 12px; border-bottom:1px solid #e0e0e0; }' +
+        'tr.winner td { background:#FFF8E7; font-weight:700; }' +
+        '.rank { font-weight:800; }' +
+        '.name { font-weight:700; }' +
+        '.votes { font-weight:900; color:#0A1A4E; text-align:center; font-size:15px; }' +
+        'thead th:last-child, tbody td:last-child { text-align:center; }' +
+        '.winner-margin { font-size:12px; font-weight:700; color:#27ae60; margin: 8px 0 16px 14px; font-style: italic; }' +
+        '.signature-section { margin-top: 80px; text-align: right; padding-right: 20px; }' +
+        '.signature-text { font-size: 15px; font-weight: 800; color: #000; border-top: 2px solid #000; padding-top: 8px; display: inline-block; min-width: 200px; text-align: center; }' +
+        '.footer { text-align:center; margin-top:20px; padding-top:10px; border-top:1px solid #eee; font-size:10px; color:#aaa; }' +
+        '@media print { body { -webkit-print-color-adjust:exact; print-color-adjust:exact; } }' +
+        '</style>' +
+        '</head><body>' +
+        '<div class="header">' +
+        '<div class="school">AKR ACADEMY SCHOOL</div>' +
+        '<div class="subtitle">Student Elections 2026 — Official Results</div>' +
+        '<div class="date">' + dateStr + ' at ' + timeStr + '</div>' +
+        '</div>' +
+        '<div class="summary">' +
+        '<div class="summary-box"><div class="num">' + (totalMembersVoted || 0) + '</div><div class="lbl">Members Voted</div></div>' +
+        '<div class="summary-box"><div class="num">' + (totalVotes || 0) + '</div><div class="lbl">Total Votes</div></div>' +
+        '<div class="summary-box"><div class="num">' + (totalCandidates || 0) + '</div><div class="lbl">No. of Candidates</div></div>' +
+        '</div>' +
+        catsHtml +
+        '<div class="signature-section"><div class="signature-text">Principal Signature</div></div>' +
+        '<div class="footer">Generated from AKR Academy Voting System — ' + dateStr + '</div>' +
+        '</body></html>';
+
+      var win = window.open('', '_blank', 'width=800,height=1000');
+      win.document.write(html);
+      win.document.close();
+      setTimeout(function () { win.print(); }, 600);
+    }
+
+    async function resetAllVotes() {
+      if (!confirm('Reset ALL votes? This will delete all voting data and cannot be undone.')) return;
+      const res = await fetch('/admin/reset-votes', { method: 'POST' });
+      const d = await res.json();
+      if (d.success) {
+        toast('All votes reset', 'success');
+        await loadOverview();
+        await loadResultsDetail();
+        await loadCandidates();
+      } else toast(d.message || 'Error', 'error');
+    }
+
+    // ===== CATEGORIES =====
+    async function loadCategories() {
+      const res = await fetch('/api/admin/categories');
+      const d = await res.json();
+      if (!d.success) return;
+      allCategories = d.categories;
+      renderCategories();
+      populateCategoryDropdown();
+    }
+
+    function renderCategories() {
+      const tbody = document.getElementById('cat-tbody');
+      if (!allCategories.length) {
+        tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="icon">🏷️</div><p>No categories yet. Add one to get started.</p></div></td></tr>';
+        renderPagination('cat-pagination', 1, 1);
+        return;
+      }
+      const pagination = paginate(allCategories, categoryPage);
+      categoryPage = pagination.page;
+      tbody.innerHTML = pagination.pageItems.map((c, i) => `
+    <tr>
+      <td><input type="checkbox" class="cb cat-cb" value="${c.id}"></td>
+      <td>${(categoryPage - 1) * PAGE_SIZE + i + 1}</td>
+      <td><strong>${escHtml(c.name)}</strong></td>
+      <td style="color:var(--text-muted)">${escHtml(c.description || '—')}</td>
+      <td><span class="badge badge-blue">${c.display_order}</span></td>
+      <td><span class="badge badge-gold">${c.candidate_count} candidates</span></td>
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-outline btn-sm btn-icon" onclick="editCategory(${c.id})" title="Edit">✏️</button>
+          <button class="btn btn-outline btn-sm btn-icon" onclick="duplicateCategory(${c.id})" title="Duplicate">📋</button>
+          <button class="btn btn-danger btn-sm btn-icon" onclick="deleteCategory(${c.id})" title="Delete">🗑</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+      renderPagination('cat-pagination', categoryPage, pagination.totalPages, 'categories');
+    }
+
+    function openCategoryModal(cat = null) {
+      document.getElementById('cat-id').value = cat ? cat.id : '';
+      document.getElementById('cat-name').value = cat ? cat.name : '';
+      document.getElementById('cat-desc').value = cat ? cat.description || '' : '';
+      document.getElementById('cat-order').value = cat ? cat.display_order : 0;
+      document.getElementById('cat-modal-title').textContent = cat ? 'Edit Category' : 'Add Category';
+      updateCategoryPreview();
+      openModal('cat-modal');
+    }
+
+    function updateCategoryPreview() {
+      const name = document.getElementById('cat-name').value || 'Category Name';
+      const desc = document.getElementById('cat-desc').value || 'Description';
+      document.getElementById('cat-preview-name').textContent = name;
+      document.getElementById('cat-preview-desc').textContent = desc;
+    }
+
+    function editCategory(id) {
+      const cat = allCategories.find(c => c.id === id);
+      if (cat) openCategoryModal(cat);
+    }
+
+    async function saveCategory() {
+      const id = document.getElementById('cat-id').value;
+      const body = {
+        name: document.getElementById('cat-name').value.trim(),
+        description: document.getElementById('cat-desc').value.trim(),
+        display_order: document.getElementById('cat-order').value
+      };
+      if (!body.name) return toast('Please enter a category name', 'error');
+
+      const url = id ? `/admin/categories/${id}` : '/admin/categories';
+      const method = id ? 'PUT' : 'POST';
+      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const d = await res.json();
+      if (d.success) {
+        toast(id ? 'Category updated!' : 'Category created!', 'success');
+        closeModal('cat-modal');
+        await loadCategories();
+      } else toast(d.message || 'Error', 'error');
+    }
+
+    async function deleteCategory(id) {
+      if (!confirm('Delete this category? All candidates in it will also be deleted.')) return;
+      const res = await fetch(`/admin/categories/${id}`, { method: 'DELETE' });
+      const d = await res.json();
+      if (d.success) { toast('Category deleted', 'success'); await loadCategories(); await loadCandidates(); }
+      else toast(d.message || 'Error', 'error');
+    }
+
+    async function duplicateCategory(id) {
+      const res = await fetch(`/admin/categories/${id}/duplicate`, { method: 'POST' });
+      const d = await res.json();
+      if (d.success) { toast('Category duplicated!', 'success'); await loadCategories(); }
+      else toast(d.message || 'Error', 'error');
+    }
+
+    async function bulkDeleteCategories() {
+      const ids = [...document.querySelectorAll('.cat-cb:checked')].map(cb => parseInt(cb.value));
+      if (!ids.length) return toast('Select categories first', 'error');
+      if (!confirm(`Delete ${ids.length} categories?`)) return;
+      const res = await fetch('/admin/categories/bulk-delete', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids })
+      });
+      const d = await res.json();
+      if (d.success) { toast(`${ids.length} categories deleted`, 'success'); await loadCategories(); await loadCandidates(); }
+      else toast(d.message || 'Error', 'error');
+    }
+
+    // ===== CANDIDATES =====
+    async function loadCandidates() {
+      const res = await fetch('/api/admin/candidates');
+      const d = await res.json();
+      if (!d.success) return;
+      allCandidates = d.candidates;
+      renderCandidates();
+    }
+
+    function renderCandidates() {
+      const tbody = document.getElementById('cand-tbody');
+      if (!allCandidates.length) {
+        tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="icon">👤</div><p>No candidates yet.</p></div></td></tr>';
+        renderPagination('cand-pagination', 1, 1);
+        return;
+      }
+      const pagination = paginate(allCandidates, candidatePage);
+      candidatePage = pagination.page;
+      tbody.innerHTML = pagination.pageItems.map((c, i) => `
+    <tr>
+      <td><input type="checkbox" class="cb cand-cb" value="${c.id}"></td>
+      <td>${c.profile_pic
+          ? `<img src="/uploads/${c.profile_pic}" class="thumb" onerror="this.outerHTML='<div class=thumb>${c.name.charAt(0)}</div>'">`
+          : `<div class="thumb">${c.name.charAt(0)}</div>`
+        }</td>
+      <td><strong>${escHtml(c.name)}</strong></td>
+      <td><span class="badge badge-gold">${escHtml(c.category_name || '—')}</span></td>
+      <td>${escHtml(c.class)}</td>
+      <td>${escHtml(c.section)}</td>
+      <td><span class="badge badge-green">${c.vote_count} votes</span></td>
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-outline btn-sm btn-icon" onclick="editCandidate(${c.id})" title="Edit">✏️</button>
+          <button class="btn btn-warning btn-sm btn-icon" onclick="resetCandidateVotes(${c.id})" title="Reset Votes">🔄</button>
+          <button class="btn btn-danger btn-sm btn-icon" onclick="deleteCandidate(${c.id})" title="Delete">🗑</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+      renderPagination('cand-pagination', candidatePage, pagination.totalPages, 'candidates');
+    }
+
+    function populateCategoryDropdown() {
+      const sel = document.getElementById('cand-cat');
+      const current = sel.value;
+      sel.innerHTML = '<option value="">Select category...</option>' +
+        allCategories.map(c => `<option value="${c.id}" ${current == c.id ? 'selected' : ''}>${escHtml(c.name)}</option>`).join('');
+    }
+
+    function openCandidateModal(cand = null) {
+      document.getElementById('cand-id').value = cand ? cand.id : '';
+      document.getElementById('cand-name').value = cand ? cand.name : '';
+      document.getElementById('cand-section').value = cand ? cand.section : '';
+      document.getElementById('cand-modal-title').textContent = cand ? 'Edit Candidate' : 'Add Candidate';
+      document.getElementById('cand-flag').value = '';
+      document.getElementById('cand-pic').value = '';
+      // Reset flag preview
+      document.getElementById('flag-preview-area').style.display = 'none';
+      document.getElementById('flag-preview-img').src = '';
+      document.getElementById('flag-remove-bg').checked = false;
+      currentFlagDataUrl = null; currentFlagOriginalUrl = null;
+      // Reset photo preview
+      document.getElementById('pic-preview-area').style.display = 'none';
+      document.getElementById('pic-preview-img').src = '';
+      document.getElementById('pic-remove-bg').checked = false;
+      currentPicDataUrl = null; currentPicOriginalUrl = null;
+      populateCategoryDropdown();
+      if (cand) {
+        document.getElementById('cand-cat').value = cand.category_id;
+        document.getElementById('cand-class').value = cand.class;
+        if (cand.profile_pic) {
+          currentPicDataUrl = null; // server image, not a blob
+          document.getElementById('pic-preview-img').src = `/uploads/${cand.profile_pic}`;
+          document.getElementById('pic-preview-area').style.display = 'flex';
+        }
+        if (cand.flag) {
+          currentFlagDataUrl = null;
+          document.getElementById('flag-preview-img').src = `/uploads/${cand.flag}`;
+          document.getElementById('flag-preview-area').style.display = 'flex';
+        }
+      }
+      document.getElementById('cand-preview-card').classList.add('visible');
+      updateCandPreview();
+      openModal('cand-modal');
+    }
+
+    function editCandidate(id) {
+      const cand = allCandidates.find(c => c.id === id);
+      if (cand) openCandidateModal(cand);
+    }
+
+    // ===== FLAG & PHOTO CROP / REMOVE BG =====
+    let cropper, cropperFlag;
+    let currentPicDataUrl = null, currentPicOriginalUrl = null;
+    let currentFlagDataUrl = null, currentFlagOriginalUrl = null;
+
+    // --- FLAG ---
+    function previewFlag(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        document.getElementById('crop-flag-image').src = e.target.result;
+        document.getElementById('crop-flag-modal').classList.add('open');
+        if (cropperFlag) cropperFlag.destroy();
+        cropperFlag = new Cropper(document.getElementById('crop-flag-image'), {
+          aspectRatio: NaN, // free ratio for flags
+          viewMode: 1, responsive: true, restore: false,
+          checkCrossOrigin: false, checkOrientation: false,
+          modal: true, guides: true, center: true, highlight: false,
+          background: false, autoCropArea: 0.9,
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function closeFlagCropModal() {
+      document.getElementById('crop-flag-modal').classList.remove('open');
+      if (cropperFlag) { cropperFlag.destroy(); cropperFlag = null; }
+    }
+
+    function cropFlagAndSave() {
+      if (!cropperFlag) return;
+      const canvas = cropperFlag.getCroppedCanvas({ maxWidth: 600, maxHeight: 400 });
+      currentFlagOriginalUrl = canvas.toDataURL('image/png');
+      currentFlagDataUrl = currentFlagOriginalUrl;
+      document.getElementById('flag-remove-bg').checked = false;
+      const area = document.getElementById('flag-preview-area');
+      document.getElementById('flag-preview-img').src = currentFlagDataUrl;
+      area.style.display = 'flex';
+      closeFlagCropModal();
+    }
+
+    // --- PROFILE PHOTO ---
+    function previewPic(input) {
+      const file = input.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        document.getElementById('crop-image').src = e.target.result;
+        document.getElementById('crop-modal').classList.add('open');
+        if (cropper) cropper.destroy();
+        cropper = new Cropper(document.getElementById('crop-image'), {
+          aspectRatio: 1, viewMode: 1, responsive: true, restore: false,
+          checkCrossOrigin: false, checkOrientation: false,
+          modal: true, guides: true, center: true, highlight: false,
+          background: false, autoCropArea: 0.8,
+        });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function closeCropModal() {
+      document.getElementById('crop-modal').classList.remove('open');
+      if (cropper) { cropper.destroy(); cropper = null; }
+    }
+
+    function cropAndSave() {
+      if (!cropper) return;
+      const canvas = cropper.getCroppedCanvas({ width: 300, height: 300 });
+      currentPicOriginalUrl = canvas.toDataURL('image/png');
+      currentPicDataUrl = currentPicOriginalUrl;
+      document.getElementById('pic-remove-bg').checked = false;
+      const area = document.getElementById('pic-preview-area');
+      document.getElementById('pic-preview-img').src = currentPicDataUrl;
+      area.style.display = 'flex';
+      updateCandPreview();
+      closeCropModal();
+    }
+
+    // --- REMOVE BACKGROUND (canvas-based) ---
+    function removeBackground(dataUrl, cb) {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width; canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const idata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const d = idata.data;
+        // Sample corners to detect background colour
+        function sample(x, y) { const i=(y*canvas.width+x)*4; return [d[i],d[i+1],d[i+2]]; }
+        const corners = [sample(0,0),sample(canvas.width-1,0),sample(0,canvas.height-1),sample(canvas.width-1,canvas.height-1)];
+        const avg = corners.reduce((a,c)=>[a[0]+c[0],a[1]+c[1],a[2]+c[2]],[0,0,0]).map(v=>Math.round(v/corners.length));
+        const tol = 40;
+        for (let i = 0; i < d.length; i += 4) {
+          const dr=Math.abs(d[i]-avg[0]), dg=Math.abs(d[i+1]-avg[1]), db=Math.abs(d[i+2]-avg[2]);
+          if (dr<tol && dg<tol && db<tol) d[i+3] = 0;
+        }
+        ctx.putImageData(idata, 0, 0);
+        cb(canvas.toDataURL('image/png'));
+      };
+      img.src = dataUrl;
+    }
+
+    function applyPicRemoveBg() {
+      const checked = document.getElementById('pic-remove-bg').checked;
+      if (!currentPicOriginalUrl) return;
+      if (!checked) {
+        currentPicDataUrl = currentPicOriginalUrl;
+        document.getElementById('pic-preview-img').src = currentPicDataUrl;
+        updateCandPreview(); return;
+      }
+      document.getElementById('pic-remove-bg').parentElement.style.opacity = '0.5';
+      removeBackground(currentPicOriginalUrl, result => {
+        currentPicDataUrl = result;
+        document.getElementById('pic-preview-img').src = result;
+        document.getElementById('pic-remove-bg').parentElement.style.opacity = '1';
+        updateCandPreview();
+      });
+    }
+
+    function applyFlagRemoveBg() {
+      const checked = document.getElementById('flag-remove-bg').checked;
+      if (!currentFlagOriginalUrl) return;
+      if (!checked) {
+        currentFlagDataUrl = currentFlagOriginalUrl;
+        document.getElementById('flag-preview-img').src = currentFlagDataUrl; return;
+      }
+      document.getElementById('flag-remove-bg').parentElement.style.opacity = '0.5';
+      removeBackground(currentFlagOriginalUrl, result => {
+        currentFlagDataUrl = result;
+        document.getElementById('flag-preview-img').src = result;
+        document.getElementById('flag-remove-bg').parentElement.style.opacity = '1';
+      });
+    }
+
+    function updateCandPreview() {
+      const name = document.getElementById('cand-name').value || 'Candidate Name';
+      const cls = document.getElementById('cand-class').value || 'XI';
+      const sec = document.getElementById('cand-section').value || 'A';
+      document.getElementById('cand-prev-name').textContent = name;
+      document.getElementById('cand-prev-meta').textContent = `Class ${cls} · Section ${sec}`;
+      const el = document.getElementById('cand-prev-img');
+      if (currentPicDataUrl) {
+        if (el.tagName === 'DIV') {
+          el.outerHTML = `<img class="preview-img" id="cand-prev-img" src="${currentPicDataUrl}" style="object-fit:cover">`;
+        } else {
+          el.src = currentPicDataUrl;
+        }
+      } else {
+        if (el && el.tagName === 'DIV') el.textContent = name.charAt(0).toUpperCase();
+      }
+    }
+
+    function dataURLToBlob(dataURL) {
+      const arr = dataURL.split(',');
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) u8arr[n] = bstr.charCodeAt(n);
+      return new Blob([u8arr], { type: mime });
+    }
+
+    async function saveCandidate() {
+      const id = document.getElementById('cand-id').value;
+      const formData = new FormData();
+      formData.append('name', document.getElementById('cand-name').value.trim());
+      formData.append('category_id', document.getElementById('cand-cat').value);
+      formData.append('class', document.getElementById('cand-class').value);
+      formData.append('section', document.getElementById('cand-section').value.trim());
+      // Flag: send as PNG blob if cropped/edited
+      if (currentFlagDataUrl) {
+        formData.append('flag', dataURLToBlob(currentFlagDataUrl), 'flag.png');
+      } else {
+        const flagFile = document.getElementById('cand-flag').files[0];
+        if (flagFile) formData.append('flag', flagFile);
+      }
+      // Profile photo: send as PNG blob if cropped/edited
+      if (currentPicDataUrl) {
+        formData.append('profile_pic', dataURLToBlob(currentPicDataUrl), 'profile.png');
+      }
+
+      if (!formData.get('name')) return toast('Name is required', 'error');
+      if (!formData.get('category_id')) return toast('Select a category', 'error');
+
+      const url = id ? `/admin/candidates/${id}` : '/admin/candidates';
+      const method = id ? 'PUT' : 'POST';
+      const res = await fetch(url, { method, body: formData });
+      const d = await res.json();
+      if (d.success) {
+        toast(id ? 'Candidate updated!' : 'Candidate added!', 'success');
+        closeModal('cand-modal');
+        await loadCandidates();
+      } else toast(d.message || 'Error', 'error');
+    }
+
+    async function deleteCandidate(id) {
+      if (!confirm('Delete this candidate?')) return;
+      const res = await fetch(`/admin/candidates/${id}`, { method: 'DELETE' });
+      const d = await res.json();
+      if (d.success) { toast('Candidate deleted', 'success'); await loadCandidates(); }
+      else toast(d.message || 'Error', 'error');
+    }
+
+    async function resetCandidateVotes(id) {
+      if (!confirm('Reset votes for this candidate? This cannot be undone.')) return;
+      const res = await fetch(`/admin/reset-candidate-votes/${id}`, { method: 'POST' });
+      const d = await res.json();
+      if (d.success) { toast('Votes reset', 'success'); await loadCandidates(); await loadOverview(); }
+      else toast(d.message || 'Error', 'error');
+    }
+
+    async function bulkDeleteCandidates() {
+      const ids = [...document.querySelectorAll('.cand-cb:checked')].map(cb => parseInt(cb.value));
+      if (!ids.length) return toast('Select candidates first', 'error');
+      if (!confirm(`Delete ${ids.length} candidates?`)) return;
+      const res = await fetch('/admin/candidates/bulk-delete', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids })
+      });
+      const d = await res.json();
+      if (d.success) { toast(`${ids.length} candidates deleted`, 'success'); await loadCandidates(); }
+      else toast(d.message || 'Error', 'error');
+    }
+
+    // ===== BOOTHS =====
+    async function loadBooths() {
+      const res = await fetch('/api/admin/booths');
+      const d = await res.json();
+      if (!d.success) return;
+      allBooths = d.booths;
+      renderBooths();
+    }
+
+    function renderBooths() {
+      const tbody = document.getElementById('booth-tbody');
+      const now = new Date();
+      if (!allBooths.length) {
+        tbody.innerHTML = '<tr><td colspan="9"><div class="empty-state"><div class="icon">🗳️</div><p>No booths created yet.</p></div></td></tr>';
+        renderPagination('booth-pagination', 1, 1);
+        return;
+      }
+      const pagination = paginate(allBooths, boothPage);
+      boothPage = pagination.page;
+      tbody.innerHTML = pagination.pageItems.map((b, i) => {
+        const expired = b.expires_at && new Date(b.expires_at) < now;
+        const limitReached = b.max_votes !== null && b.votes_received >= b.max_votes;
+        let status = !b.is_active ? 'Inactive' : expired ? 'Expired' : limitReached ? 'Limit Reached' : 'Active';
+        const badgeCls = status === 'Active' ? 'badge-green' : status === 'Limit Reached' ? 'badge-red' : 'badge-red';
+
+        // Votes received progress
+        const received = b.votes_received || 0;
+        const maxV = b.max_votes;
+        let votesCell;
+        if (maxV !== null) {
+          const pct = Math.min(100, Math.round((received / maxV) * 100));
+          const barColor = limitReached ? '#E74C3C' : pct >= 80 ? '#F39C12' : 'var(--success)';
+          votesCell = `
+            <div style="min-width:110px">
+              <div style="font-size:13px;font-weight:800;color:${limitReached ? '#E74C3C' : 'var(--text)'}">${received} / ${maxV}</div>
+              <div style="height:4px;background:rgba(255,255,255,0.08);border-radius:100px;margin-top:5px;overflow:hidden">
+                <div style="height:100%;width:${pct}%;background:${barColor};border-radius:100px;transition:width 0.4s"></div>
+              </div>
+              ${limitReached ? '<div style="font-size:9px;font-weight:800;letter-spacing:1.5px;color:#E74C3C;margin-top:3px;text-transform:uppercase">🚫 Limit Reached</div>' : `<div style="font-size:10px;color:var(--text-dim);margin-top:2px">${maxV - received} left</div>`}
+            </div>`;
+        } else {
+          votesCell = `<span style="color:var(--text-muted);font-size:12px">${received} <span style="opacity:0.5">(no limit)</span></span>`;
+        }
+
+        return `
+      <tr>
+        <td><input type="checkbox" class="cb booth-cb" value="${b.id}"></td>
+        <td><strong>${escHtml(b.name)}</strong></td>
+        <td><span class="badge ${b.auth_type === 'userpass' ? 'badge-blue' : 'badge-gold'}">${b.auth_type === 'userpass' ? '👤 User/Pass' : '🔑 PIN'}</span></td>
+        <td><code style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:3px;color:var(--gold)">${b.auth_type === 'userpass' ? escHtml(b.username) : b.pin}</code></td>
+        <td style="color:var(--text-muted);font-weight:bold;">${maxV !== null ? maxV : '<span style="opacity:0.5">Unlimited</span>'}</td>
+        <td>${votesCell}</td>
+        <td style="color:var(--text-muted);font-size:12px">${b.expires_at ? new Date(b.expires_at).toLocaleString('en-IN') : '<span style="opacity:0.4">—</span>'}</td>
+        <td><span class="badge ${badgeCls}">${status}</span></td>
+        <td>
+          <div style="display:flex;gap:6px">
+            <button class="btn btn-outline btn-sm btn-icon" onclick="editBooth(${b.id})" title="Edit">✏️</button>
+            <button class="btn btn-danger btn-sm btn-icon" onclick="deleteBooth(${b.id})" title="Delete">🗑</button>
+          </div>
+        </td>
+      </tr>
+    `;
+      }).join('');
+      renderPagination('booth-pagination', boothPage, pagination.totalPages, 'booths');
+    }
+
+    function openBoothModal(booth = null) {
+      document.getElementById('booth-id').value = booth ? booth.id : '';
+      document.getElementById('booth-name').value = booth ? booth.name : '';
+      document.getElementById('booth-auth-type').value = booth?.auth_type || 'pin';
+      document.getElementById('booth-pin').value = booth ? booth.pin : '';
+      document.getElementById('booth-username').value = booth?.username || '';
+      document.getElementById('booth-password').value = booth?.password || '';
+      document.getElementById('booth-max-votes').value = booth?.max_votes || '';
+      document.getElementById('booth-expires').value = booth && booth.expires_at
+        ? new Date(booth.expires_at).toISOString().slice(0, 16) : '';
+      document.getElementById('booth-modal-title').textContent = booth ? 'Edit Booth' : 'Create Polling Booth';
+      document.getElementById('booth-preview-name').textContent = booth ? booth.name : 'Booth Name';
+      document.getElementById('booth-preview-pin').textContent = booth ? (booth.auth_type === 'userpass' ? booth.username : booth.pin) : '----';
+
+      toggleBoothAuthType();
+      openModal('booth-modal');
+
+      document.getElementById('booth-name').addEventListener('input', e => {
+        document.getElementById('booth-preview-name').textContent = e.target.value || 'Booth Name';
+      });
+      document.getElementById('booth-pin').addEventListener('input', e => {
+        if (document.getElementById('booth-auth-type').value === 'pin') {
+          document.getElementById('booth-preview-pin').textContent = e.target.value || '----';
+        }
+      });
+      document.getElementById('booth-username').addEventListener('input', e => {
+        if (document.getElementById('booth-auth-type').value === 'userpass') {
+          document.getElementById('booth-preview-pin').textContent = e.target.value || '----';
+        }
+      });
+    }
+
+    function toggleBoothAuthType() {
+      const type = document.getElementById('booth-auth-type').value;
+      const previewLabel = document.getElementById('booth-preview-label');
+      if (type === 'pin') {
+        document.getElementById('booth-pin-group').style.display = 'block';
+        document.getElementById('booth-userpass-group').style.display = 'none';
+        document.getElementById('booth-preview-pin').textContent = document.getElementById('booth-pin').value || '----';
+        if (previewLabel) previewLabel.textContent = 'PIN:';
+      } else {
+        document.getElementById('booth-pin-group').style.display = 'none';
+        document.getElementById('booth-userpass-group').style.display = 'block';
+        document.getElementById('booth-preview-pin').textContent = document.getElementById('booth-username').value || '----';
+        if (previewLabel) previewLabel.textContent = 'Username:';
+      }
+    }
+
+
+    function editBooth(id) {
+      const b = allBooths.find(b => b.id === id);
+      if (b) openBoothModal(b);
+    }
+
+    function generatePin() {
+      const pin = String(Math.floor(1000 + Math.random() * 9000));
+      document.getElementById('booth-pin').value = pin;
+      document.getElementById('booth-preview-pin').textContent = pin;
+    }
+
+    async function saveBooth() {
+      const id = document.getElementById('booth-id').value;
+      const type = document.getElementById('booth-auth-type').value;
+      const body = {
+        name: document.getElementById('booth-name').value.trim(),
+        auth_type: type,
+        pin: document.getElementById('booth-pin').value.trim(),
+        username: document.getElementById('booth-username').value.trim(),
+        password: document.getElementById('booth-password').value.trim(),
+        max_votes: parseInt(document.getElementById('booth-max-votes').value) || null,
+        expires_at: document.getElementById('booth-expires').value || null,
+        is_active: 1
+      };
+      if (!body.name) return toast('Booth name required', 'error');
+      if (type === 'pin') {
+        if (!/^\d{4}$/.test(body.pin)) return toast('PIN must be exactly 4 digits', 'error');
+      } else {
+        if (!body.username) return toast('Username is required', 'error');
+        if (!body.password) return toast('Password is required', 'error');
+      }
+
+      const url = id ? `/admin/booths/${id}` : '/admin/booths';
+      const method = id ? 'PUT' : 'POST';
+      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+      const d = await res.json();
+      if (d.success) {
+        toast(id ? 'Booth updated!' : 'Booth created!', 'success');
+        closeModal('booth-modal');
+        await loadBooths();
+      } else toast(d.message || 'Error', 'error');
+    }
+
+    async function deleteBooth(id) {
+      if (!confirm('Delete this polling booth?')) return;
+      const res = await fetch(`/admin/booths/${id}`, { method: 'DELETE' });
+      const d = await res.json();
+      if (d.success) { toast('Booth deleted', 'success'); await loadBooths(); }
+      else toast(d.message || 'Error', 'error');
+    }
+
+    async function bulkDeleteBooths() {
+      const ids = [...document.querySelectorAll('.booth-cb:checked')].map(cb => parseInt(cb.value));
+      if (!ids.length) return toast('Select booths first', 'error');
+      if (!confirm(`Delete ${ids.length} booths?`)) return;
+      const res = await fetch('/admin/booths/bulk-delete', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids })
+      });
+      const d = await res.json();
+      if (d.success) { toast(`${ids.length} booths deleted`, 'success'); await loadBooths(); }
+      else toast(d.message || 'Error', 'error');
+    }
+
+    // ===== ADMINS =====
+    async function loadAdmins() {
+      const res = await fetch('/api/admin/admins');
+      const d = await res.json();
+      if (!d.success) return;
+      allAdmins = d.admins;
+      const tbody = document.getElementById('admin-tbody');
+      tbody.innerHTML = allAdmins.map((a, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td><div style="display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold-d),var(--gold));display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--navy);font-size:13px">${a.username.charAt(0).toUpperCase()}</div>
+        <strong>${escHtml(a.username)}</strong>
+      </div></td>
+      <td style="color:var(--text-muted);font-size:12px">${new Date(a.created_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+      <td style="display:flex;gap:8px;">
+        <button class="btn btn-outline btn-sm" onclick="editAdmin(${a.id})">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteAdmin(${a.id})" ${a.id === currentAdminId ? 'disabled' : ''}>🗑️ Delete</button>
+      </td>
+    </tr>
+  `).join('');
+    }
+
+    function editAdmin(id) {
+      const admin = allAdmins.find(a => a.id === id);
+      if (!admin) return toast('Admin user not found', 'error');
+      openAdminModal(admin);
+    }
+
+    async function deleteAdmin(id) {
+      if (id === currentAdminId) return toast('Cannot delete your own account', 'error');
+      const admin = allAdmins.find(a => a.id === id);
+      if (!admin) return toast('Admin user not found', 'error');
+      if (!confirm(`Delete admin user '${admin.username}'?`)) return;
+      const res = await fetch(`/admin/admins/${id}`, { method: 'DELETE' });
+      const d = await res.json();
+      if (d.success) {
+        toast('Admin user deleted!', 'success');
+        await loadAdmins();
+      } else toast(d.message || 'Error', 'error');
+    }
+
+    function openAdminModal(admin = null) {
+      const modalTitle = document.getElementById('admin-modal').querySelector('.modal-title');
+      const saveBtn = document.getElementById('admin-save-btn');
+      document.getElementById('admin-id').value = admin ? admin.id : '';
+      document.getElementById('new-admin-username').value = admin ? admin.username : '';
+      document.getElementById('new-admin-password').value = '';
+      modalTitle.textContent = admin ? 'Edit Admin User' : 'Add Admin User';
+      saveBtn.textContent = admin ? 'Save Changes' : 'Create Admin';
+      openModal('admin-modal');
+    }
+
+    async function saveAdmin() {
+      const id = document.getElementById('admin-id').value;
+      const username = document.getElementById('new-admin-username').value.trim();
+      const password = document.getElementById('new-admin-password').value;
+      if (!username) return toast('Username is required', 'error');
+      if (!id && !password) return toast('Password is required for new admin', 'error');
+
+      const url = id ? `/admin/admins/${id}` : '/admin/create-admin';
+      const method = id ? 'PUT' : 'POST';
+      const body = JSON.stringify({ username, password });
+
+      const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body });
+      const d = await res.json();
+      if (d.success) {
+        toast(id ? 'Admin user updated!' : 'Admin user created!', 'success');
+        closeModal('admin-modal');
+        document.getElementById('admin-id').value = '';
+        document.getElementById('new-admin-username').value = '';
+        document.getElementById('new-admin-password').value = '';
+        await loadAdmins();
+        if (id && parseInt(id, 10) === currentAdminId) {
+          currentAdminUsername = username;
+          document.getElementById('admin-username').textContent = username;
+          document.getElementById('admin-avatar').textContent = username.charAt(0).toUpperCase();
+        }
+      } else toast(d.message || 'Error', 'error');
+    }
+
+    // ===== SETTINGS =====
+    async function loadSettings() {
+      const res = await fetch('/admin/settings');
+      const d = await res.json();
+      if (!d.success) return;
+      const settings = d.settings;
+
+      document.getElementById('setting-site-name').value = settings.site_name || '';
+      document.getElementById('setting-vote-interval').value = settings.vote_wait_seconds || '10';
+      document.getElementById('setting-disable-login-booth').value = settings.disable_login_booth || 'false';
+      document.getElementById('setting-maintenance').value = settings.maintenance_mode || 'false';
+      document.getElementById('setting-public-results').value = settings.show_public_results || 'false';
+      document.getElementById('setting-vote-sound').value = settings.vote_sound || 'false';
+      document.getElementById('setting-election-phase').value = settings.election_phase || 'voting';
+      document.getElementById('setting-login-screen-type').value = settings.login_screen_type || 'pin';
+      document.getElementById('setting-show-votes-left').value = settings.show_votes_left || 'false';
+
+      if (settings.site_logo) {
+        document.getElementById('logo-preview').innerHTML = `<img src="/uploads/${settings.site_logo}" style="max-width:200px;max-height:100px;object-fit:contain;">`;
+      } else {
+        document.getElementById('logo-preview').innerHTML = '';
+      }
+    }
+
+    async function saveSettings() {
+      const formData = new FormData();
+      formData.append('site_name', document.getElementById('setting-site-name').value.trim());
+      formData.append('vote_wait_seconds', document.getElementById('setting-vote-interval').value);
+      formData.append('disable_login_booth', document.getElementById('setting-disable-login-booth').value);
+      formData.append('maintenance_mode', document.getElementById('setting-maintenance').value);
+      formData.append('show_public_results', document.getElementById('setting-public-results').value);
+      formData.append('vote_sound', document.getElementById('setting-vote-sound').value);
+      formData.append('election_phase', document.getElementById('setting-election-phase').value);
+      formData.append('login_screen_type', document.getElementById('setting-login-screen-type').value);
+      formData.append('show_votes_left', document.getElementById('setting-show-votes-left').value);
+
+      const logoFile = document.getElementById('setting-site-logo').files[0];
+      if (logoFile) {
+        formData.append('site_logo', logoFile);
+      }
+
+      const res = await fetch('/admin/settings', { method: 'PUT', body: formData });
+      const d = await res.json();
+      if (d.success) {
+        toast('Settings saved successfully', 'success');
+        await loadSettings(); // Reload to show updated logo
+      } else toast(d.message || 'Error', 'error');
+    }
+
+    function previewLogo(input) {
+      const file = input.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('logo-preview').innerHTML = `<img src="${e.target.result}" style="max-width:200px;max-height:100px;object-fit:contain;">`;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        document.getElementById('logo-preview').innerHTML = '';
+      }
+    }
+
+    // ===== VOTES =====
+
+    // ===== EXPORT =====
+    function exportExcel() {
+      window.open('/api/admin/export', '_blank');
+    }
+
+    // ===== HELPERS =====
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    document.querySelectorAll('.modal-overlay').forEach(overlay => {
+      overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+    });
+
+    function toggleAll(cls) {
+      const all = event.target.checked;
+      document.querySelectorAll(`.${cls}`).forEach(cb => cb.checked = all);
+    }
+
+    function toast(msg, type = 'success') {
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      el.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : '❌'}</span> ${escHtml(msg)}`;
+      document.getElementById('toast-container').appendChild(el);
+      setTimeout(() => el.remove(), 3500);
+    }
+
+    function escHtml(str) {
+      if (!str && str !== 0) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Skeleton CSS for overview
+    const style = document.createElement('style');
+    style.textContent = `.skeleton{background:linear-gradient(90deg,rgba(255,255,255,0.06) 25%,rgba(255,255,255,0.12) 50%,rgba(255,255,255,0.06) 75%);background-size:200% 100%;animation:skel 1.5s infinite;border-radius:8px;}@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}`;
+    document.head.appendChild(style);
+
+    // ===== BOOTH STATS =====
+    async function loadBoothStats() {
+      try {
+        const res = await fetch('/api/booth-stats');
+        const d = await res.json();
+        const container = document.getElementById('booth-stats-container');
+        if (!d.success || !d.booths.length) {
+          container.innerHTML = '<div class="empty-state"><div class="icon">🗳️</div><p>No booth data yet.</p></div>';
+          return;
+        }
+        const maxVotes = Math.max(...d.booths.map(b => b.vote_count), 1);
+        const totalVotes = d.totalVotes || 1;
+        container.innerHTML = `
+      <table style="width:100%">
+        <thead><tr>
+          <th style="padding:12px 20px;font-size:10px;font-weight:800;letter-spacing:2px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.04)">#</th>
+          <th style="padding:12px 16px;font-size:10px;font-weight:800;letter-spacing:2px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.04)">BOOTH NAME</th>
+          <th style="padding:12px 16px;font-size:10px;font-weight:800;letter-spacing:2px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.04)">VOTES</th>
+          <th style="padding:12px 16px;font-size:10px;font-weight:800;letter-spacing:2px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.04)">SHARE</th>
+          <th style="padding:12px 16px;font-size:10px;font-weight:800;letter-spacing:2px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.04)">PROGRESS</th>
+          <th style="padding:12px 16px;font-size:10px;font-weight:800;letter-spacing:2px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.04)">STATUS</th>
+        </tr></thead>
+        <tbody>
+        ${d.booths.map((b, i) => {
+          const pct = Math.round((b.vote_count / maxVotes) * 100);
+          const share = Math.round((b.vote_count / totalVotes) * 100);
+          return `
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.04)">
+              <td style="padding:14px 20px;font-family:'Cinzel',serif;font-size:18px;font-weight:900;color:rgba(255,255,255,0.15)">${i + 1}</td>
+              <td style="padding:14px 16px;font-size:14px;font-weight:700;color:var(--text)">${escHtml(b.name)}</td>
+              <td style="padding:14px 16px">
+                <span style="font-family:'Cinzel',serif;font-size:22px;font-weight:900;color:var(--gold)">${b.vote_count.toLocaleString()}</span>
+                <span style="font-size:10px;color:var(--text-dim);margin-left:4px">votes</span>
+                <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">${b.member_voted_count || 0} members</div>
+              </td>
+              <td style="padding:14px 16px;font-size:13px;font-weight:800;color:var(--text-muted)">${share}%</td>
+              <td style="padding:14px 16px;min-width:120px">
+                <div style="height:6px;background:rgba(255,255,255,0.06);border-radius:100px;overflow:hidden">
+                  <div style="height:100%;width:${pct}%;background:${i === 0 ? 'linear-gradient(90deg,#C77B00,#F5A623)' : 'linear-gradient(90deg,#1B4FD8,#3B6FF0)'};border-radius:100px;transition:width 0.8s"></div>
+                </div>
+              </td>
+              <td style="padding:14px 16px">
+                <span class="badge ${b.is_active ? 'badge-green' : 'badge-red'}">${b.is_active ? 'Active' : 'Inactive'}</span>
+              </td>
+            </tr>`;
+        }).join('')}
+        </tbody>
+      </table>
+      <div style="padding:16px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:12px;color:var(--text-muted)">Total: <strong style="color:var(--gold)">${d.totalVotes.toLocaleString()} votes</strong> across ${d.booths.length} booth${d.booths.length !== 1 ? 's' : ''}</div>
+        <span style="font-size:10px;color:var(--text-dim)">Updates every 30s</span>
+      </div>`;
+        document.getElementById('booth-stats-live-badge').style.display = 'inline';
+      } catch (e) { console.error(e); }
+    }
+
+    // ===== ACTIVITY FEED =====
+    async function loadActivityFeed() {
+      try {
+        const res = await fetch('/api/admin/activity');
+        const d = await res.json();
+        const container = document.getElementById('activity-container');
+        if (!d.success || !d.activity.length) {
+          container.innerHTML = '<div class="empty-state"><div class="icon">⚡</div><p>No votes recorded yet. Activity will appear here in real time.</p></div>';
+          return;
+        }
+        container.innerHTML = `
+      <table style="width:100%">
+        <thead><tr>
+          <th style="padding:12px 20px;font-size:10px;font-weight:800;letter-spacing:2px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.04)">TIME</th>
+          <th style="padding:12px 16px;font-size:10px;font-weight:800;letter-spacing:2px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.04)">BOOTH</th>
+          <th style="padding:12px 16px;font-size:10px;font-weight:800;letter-spacing:2px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);background:rgba(255,255,255,0.04)">CATEGORY</th>
+        </tr></thead>
+        <tbody>
+        ${d.activity.map((a, i) => {
+          const dt = new Date(a.voted_at);
+          const time = dt.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          const date = dt.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
+          return `
+            <tr style="border-bottom:1px solid rgba(255,255,255,0.04);${i === 0 ? 'background:rgba(245,166,35,0.04)' : ''}">
+              <td style="padding:12px 20px">
+                <div style="font-size:13px;font-weight:700;color:var(--text)">${time}</div>
+                <div style="font-size:10px;color:var(--text-dim)">${date}</div>
+              </td>
+              <td style="padding:12px 16px">
+                <span class="badge badge-blue">${escHtml(a.booth_name || 'Unknown')}</span>
+              </td>
+              <td style="padding:12px 16px;font-size:13px;font-weight:600;color:var(--text-muted)">${escHtml(a.category_name || 'Unknown')}</td>
+            </tr>`;
+        }).join('')}
+        </tbody>
+      </table>`;
+      } catch (e) { console.error(e); }
+    }
+
+    // ===== AUDIT LOG =====
+    async function loadAuditLog() {
+      try {
+        const res = await fetch('/api/admin/audit-log');
+        const d = await res.json();
+        const tbody = document.getElementById('audit-tbody');
+        if (!d.success || !d.logs.length) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted)">No audit entries yet.</td></tr>';
+          return;
+        }
+        const actionColors = {
+          ADMIN_LOGIN: 'badge-blue',
+          CREATE_CATEGORY: 'badge-green', DELETE_CATEGORY: 'badge-red',
+          CREATE_BOOTH: 'badge-green', DELETE_BOOTH: 'badge-red',
+          RESET_ALL_VOTES: 'badge-red',
+        };
+        tbody.innerHTML = d.logs.map(log => {
+          const dt = new Date(log.created_at);
+          const time = dt.toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+          let details = '';
+          try { const obj = JSON.parse(log.details || '{}'); details = Object.entries(obj).map(([k, v]) => `${k}=${v}`).join(', '); } catch (e) { }
+          return `
+        <tr>
+          <td style="font-size:12px;color:var(--text-muted);white-space:nowrap">${time}</td>
+          <td><span class="badge badge-gold">${escHtml(log.admin_username)}</span></td>
+          <td><span class="badge ${actionColors[log.action] || 'badge-blue'}" style="font-size:9px">${escHtml(log.action)}</span></td>
+          <td style="font-size:11px;color:var(--text-dim)">${escHtml(details)}</td>
+        </tr>`;
+        }).join('');
+      } catch (e) { console.error(e); }
+    }
+
+    // ===== BACKGROUND LIVE POLLING =====
+    // Auto-refresh results in admin every 30s
+    setInterval(async () => {
+      const activePanel = document.querySelector('.panel.active');
+      if (!activePanel) return;
+      const panelId = activePanel.id;
+      if (panelId === 'panel-overview') await loadOverview();
+      if (panelId === 'panel-results') await loadResultsDetail();
+      if (panelId === 'panel-booth-stats') await loadBoothStats();
+    }, 30000);
+
+    // Auto-refresh activity feed every 10s
+    setInterval(async () => {
+      const activePanel = document.querySelector('.panel.active');
+      if (activePanel && activePanel.id === 'panel-activity') await loadActivityFeed();
+    }, 10000);
+
+    // ===== THEME MANAGER =====
+    // Theme data is embedded here so the UI works even if themes.js is slow/blocked
+    var ADMIN_THEMES = [
+      { id: 'royal-navy', name: 'Royal Navy', description: 'Classic deep navy & gold \u2014 the original look', preview: ['#0A1A4E', '#F5A623', '#1B4FD8'], vars: { '--gold': '#F5A623', '--gold-light': '#FFD166', '--gold-dark': '#C77B00', '--navy': '#0A1A4E', '--navy-light': '#1A2F7A', '--blue': '#1B4FD8', '--blue-light': '#3B6FF0', '--bg': '#060F30', '--surface': 'rgba(255,255,255,0.04)', '--surface2': 'rgba(255,255,255,0.08)', '--border': 'rgba(245,166,35,0.18)', '--border-h': 'rgba(245,166,35,0.4)', '--text-muted': 'rgba(255,255,255,0.45)', '--text-dim': 'rgba(255,255,255,0.25)' }, bg: 'linear-gradient(160deg,#050D2E 0%,#0A1A4E 40%,#0D1B5E 100%)' },
+      { id: 'crimson-dynasty', name: 'Crimson Dynasty', description: 'Fierce deep red & gold \u2014 power and passion', preview: ['#2D0808', '#F5A623', '#E74C3C'], vars: { '--gold': '#F5A623', '--gold-light': '#FFD166', '--gold-dark': '#C77B00', '--navy': '#2D0808', '--navy-light': '#4A0E0E', '--blue': '#C0392B', '--blue-light': '#E74C3C', '--bg': '#150303', '--surface': 'rgba(255,255,255,0.04)', '--surface2': 'rgba(255,255,255,0.08)', '--border': 'rgba(245,166,35,0.18)', '--border-h': 'rgba(245,166,35,0.4)', '--text-muted': 'rgba(255,255,255,0.45)', '--text-dim': 'rgba(255,255,255,0.25)' }, bg: 'linear-gradient(160deg,#0D0101 0%,#2D0808 40%,#3D0A0A 100%)' },
+      { id: 'emerald-republic', name: 'Emerald Republic', description: 'Deep forest green & gold \u2014 nature and prosperity', preview: ['#042010', '#2ECC71', '#F5A623'], vars: { '--gold': '#2ECC71', '--gold-light': '#58D68D', '--gold-dark': '#1A8A4A', '--navy': '#042010', '--navy-light': '#083D1C', '--blue': '#148A41', '--blue-light': '#1DBE58', '--bg': '#02100A', '--surface': 'rgba(255,255,255,0.04)', '--surface2': 'rgba(255,255,255,0.08)', '--border': 'rgba(46,204,113,0.2)', '--border-h': 'rgba(46,204,113,0.45)', '--text-muted': 'rgba(255,255,255,0.45)', '--text-dim': 'rgba(255,255,255,0.25)' }, bg: 'linear-gradient(160deg,#010D05 0%,#042010 40%,#062615 100%)' },
+      { id: 'royal-amethyst', name: 'Royal Amethyst', description: 'Deep violet & silver \u2014 elegance and mystique', preview: ['#150A2E', '#A855F7', '#7C3AED'], vars: { '--gold': '#A855F7', '--gold-light': '#C084FC', '--gold-dark': '#7C3AED', '--navy': '#150A2E', '--navy-light': '#2D1558', '--blue': '#7C3AED', '--blue-light': '#9333EA', '--bg': '#0A0518', '--surface': 'rgba(255,255,255,0.04)', '--surface2': 'rgba(255,255,255,0.08)', '--border': 'rgba(168,85,247,0.2)', '--border-h': 'rgba(168,85,247,0.45)', '--text-muted': 'rgba(255,255,255,0.45)', '--text-dim': 'rgba(255,255,255,0.25)' }, bg: 'linear-gradient(160deg,#060213 0%,#150A2E 40%,#1E0F42 100%)' },
+      { id: 'midnight-steel', name: 'Midnight Steel', description: 'Dark charcoal & electric cyan \u2014 tech and precision', preview: ['#0D1117', '#00D4FF', '#1F6FEB'], vars: { '--gold': '#00D4FF', '--gold-light': '#67E8F9', '--gold-dark': '#0099BB', '--navy': '#0D1117', '--navy-light': '#161B22', '--blue': '#1F6FEB', '--blue-light': '#388BFD', '--bg': '#090D13', '--surface': 'rgba(255,255,255,0.04)', '--surface2': 'rgba(255,255,255,0.08)', '--border': 'rgba(0,212,255,0.2)', '--border-h': 'rgba(0,212,255,0.45)', '--text-muted': 'rgba(255,255,255,0.45)', '--text-dim': 'rgba(255,255,255,0.25)' }, bg: 'linear-gradient(160deg,#060A0F 0%,#0D1117 40%,#111A24 100%)' },
+      { id: 'ocean-senate', name: 'Ocean Senate', description: 'Deep ocean teal & gold \u2014 calm authority', preview: ['#051825', '#00B4D8', '#F5A623'], vars: { '--gold': '#00B4D8', '--gold-light': '#48CAE4', '--gold-dark': '#0077B6', '--navy': '#051825', '--navy-light': '#0A2D45', '--blue': '#0077B6', '--blue-light': '#0096C7', '--bg': '#030E18', '--surface': 'rgba(255,255,255,0.04)', '--surface2': 'rgba(255,255,255,0.08)', '--border': 'rgba(0,180,216,0.2)', '--border-h': 'rgba(0,180,216,0.45)', '--text-muted': 'rgba(255,255,255,0.45)', '--text-dim': 'rgba(255,255,255,0.25)' }, bg: 'linear-gradient(160deg,#020B12 0%,#051825 40%,#072333 100%)' },
+      { id: 'obsidian-elite', name: 'Obsidian Elite', description: 'Pure black & bright gold \u2014 maximum contrast', preview: ['#0A0A0A', '#FFD700', '#555555'], vars: { '--gold': '#FFD700', '--gold-light': '#FFE766', '--gold-dark': '#CC9E00', '--navy': '#0A0A0A', '--navy-light': '#1A1A1A', '--blue': '#333333', '--blue-light': '#555555', '--bg': '#050505', '--surface': 'rgba(255,255,255,0.05)', '--surface2': 'rgba(255,255,255,0.1)', '--border': 'rgba(255,215,0,0.2)', '--border-h': 'rgba(255,215,0,0.45)', '--text-muted': 'rgba(255,255,255,0.45)', '--text-dim': 'rgba(255,255,255,0.25)' }, bg: 'linear-gradient(160deg,#020202 0%,#0A0A0A 40%,#0F0F0F 100%)' },
+      { id: 'rose-parliament', name: 'Rose Parliament', description: 'Dark rose & pink gold \u2014 warmth and authority', preview: ['#1A0510', '#F472B6', '#BE185D'], vars: { '--gold': '#F472B6', '--gold-light': '#F9A8D4', '--gold-dark': '#BE185D', '--navy': '#1A0510', '--navy-light': '#3D0A25', '--blue': '#BE185D', '--blue-light': '#DB2777', '--bg': '#0F030A', '--surface': 'rgba(255,255,255,0.04)', '--surface2': 'rgba(255,255,255,0.08)', '--border': 'rgba(244,114,182,0.2)', '--border-h': 'rgba(244,114,182,0.45)', '--text-muted': 'rgba(255,255,255,0.45)', '--text-dim': 'rgba(255,255,255,0.25)' }, bg: 'linear-gradient(160deg,#0A0207 0%,#1A0510 40%,#220718 100%)' },
+      { id: 'solar-republic', name: 'Solar Republic', description: 'Dark amber & bright orange \u2014 energy and warmth', preview: ['#1A0E00', '#FF8C00', '#CC5500'], vars: { '--gold': '#FF8C00', '--gold-light': '#FFB347', '--gold-dark': '#CC7000', '--navy': '#1A0E00', '--navy-light': '#2E1A00', '--blue': '#CC5500', '--blue-light': '#E0660A', '--bg': '#100900', '--surface': 'rgba(255,255,255,0.04)', '--surface2': 'rgba(255,255,255,0.08)', '--border': 'rgba(255,140,0,0.2)', '--border-h': 'rgba(255,140,0,0.45)', '--text-muted': 'rgba(255,255,255,0.45)', '--text-dim': 'rgba(255,255,255,0.25)' }, bg: 'linear-gradient(160deg,#080500 0%,#1A0E00 40%,#221200 100%)' },
+    ];
+
+    // Also expose globally so other scripts can use it
+    window.AKR_THEMES = ADMIN_THEMES;
+
+    var activeThemeId = 'royal-navy';
+    var previewingThemeId = null;
+
+    function adminApplyTheme(theme) {
+      if (!theme) return;
+      // Build CSS vars + admin short-name aliases
+      var aliases = { '--gold-light': '--gold-l', '--gold-dark': '--gold-d', '--navy-light': '--navy-l', '--blue-light': '--blue-l' };
+      var extra = '';
+      var cssVars = Object.keys(theme.vars).map(function (k) {
+        var line = k + ':' + theme.vars[k] + ';';
+        if (aliases[k]) extra += aliases[k] + ':' + theme.vars[k] + ';';
+        return line;
+      }).join('');
+      cssVars += extra;
+      var el = document.getElementById('akr-theme-vars');
+      if (!el) { el = document.createElement('style'); el.id = 'akr-theme-vars'; document.head.appendChild(el); }
+      el.textContent = ':root{' + cssVars + '}';
+      document.body.style.background = theme.bg;
+      try { sessionStorage.setItem('akr-theme-id', theme.id); } catch (e2) { }
+    }
+
+    async function renderThemeGrid() {
+      // Fetch active theme from server
+      try {
+        const res = await fetch('/api/theme');
+        const d = await res.json();
+        if (d && d.success && d.themeId) activeThemeId = d.themeId;
+      } catch (e) { }
+
+      const grid = document.getElementById('themes-grid');
+      if (!grid) { console.error('themes-grid element not found'); return; }
+
+      grid.innerHTML = ADMIN_THEMES.map(function (theme) {
+        const isActive = theme.id === activeThemeId;
+        const bg = theme.preview[0];
+        const accent = theme.preview[1];
+        const secondary = theme.preview[2];
+
+        return '<div class="theme-card' + (isActive ? ' active' : '') + '" id="tc-' + theme.id + '">' +
+          '<div class="theme-card-active-badge">\u2713 ACTIVE</div>' +
+          '<div class="theme-swatch">' +
+          '<div class="theme-swatch-col" style="background:' + bg + '"></div>' +
+          '<div class="theme-swatch-col" style="background:' + secondary + '"></div>' +
+          '<div class="theme-swatch-col" style="background:' + accent + '"></div>' +
+          '<div class="theme-swatch-col" style="background:' + bg + ';display:flex;align-items:center;justify-content:center">' +
+          '<div style="width:24px;height:24px;border-radius:50%;background:' + accent + ';box-shadow:0 0 14px ' + accent + '99"></div>' +
+          '</div>' +
+          '</div>' +
+          '<div class="theme-preview-bar" style="background:' + accent + '"></div>' +
+          '<div class="theme-info">' +
+          '<div class="theme-name">' + escHtml(theme.name) + '</div>' +
+          '<div class="theme-desc">' + escHtml(theme.description) + '</div>' +
+          '</div>' +
+          '<div class="theme-card-actions">' +
+          '<button class="btn-theme-select" onclick="previewAndSelect(\'' + theme.id + '\')">' +
+          (isActive ? '\u2713 Active' : 'Select') +
+          '</button>' +
+          '<button class="btn-theme-preview" title="Live Preview" onclick="previewThemeOnly(\'' + theme.id + '\',event)">\uD83D\uDC41</button>' +
+          '</div>' +
+          '</div>';
+      }).join('');
+    }
+
+    function previewThemeOnly(themeId, e) {
+      if (e && e.stopPropagation) e.stopPropagation();
+      previewingThemeId = themeId;
+      const theme = ADMIN_THEMES.find(function (t) { return t.id === themeId; });
+      adminApplyTheme(theme);
+      document.getElementById('live-preview-banner').classList.add('visible');
+      document.getElementById('theme-preview-cancel').style.display = 'inline-flex';
+      document.getElementById('theme-apply-btn').style.display = 'inline-flex';
+      document.getElementById('theme-apply-btn').dataset.themeId = themeId;
+      document.querySelectorAll('.theme-card').forEach(function (c) { c.style.outline = ''; });
+      const card = document.getElementById('tc-' + themeId);
+      if (card) card.style.outline = '2px dashed var(--gold)';
+    }
+
+    function previewAndSelect(themeId) { previewThemeOnly(themeId, null); }
+
+    function cancelThemePreview() {
+      previewingThemeId = null;
+      const theme = ADMIN_THEMES.find(function (t) { return t.id === activeThemeId; });
+      adminApplyTheme(theme);
+      document.getElementById('live-preview-banner').classList.remove('visible');
+      document.getElementById('theme-preview-cancel').style.display = 'none';
+      document.getElementById('theme-apply-btn').style.display = 'none';
+      document.querySelectorAll('.theme-card').forEach(function (c) { c.style.outline = ''; });
+    }
+
+    async function applySelectedTheme() {
+      const themeId = document.getElementById('theme-apply-btn').dataset.themeId || previewingThemeId;
+      if (!themeId) return;
+      try {
+        const res = await fetch('/api/admin/theme', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ themeId: themeId })
+        });
+        const d = await res.json();
+        if (!d.success) return toast(d.message || 'Failed to apply theme', 'error');
+        activeThemeId = themeId;
+        const theme = ADMIN_THEMES.find(function (t) { return t.id === themeId; });
+        adminApplyTheme(theme);
+        cancelThemePreview();
+        renderThemeGrid();
+        const name = theme ? theme.name : themeId;
+        toast('"' + name + '" theme applied across all pages!', 'success');
+      } catch (e) { toast('Error applying theme', 'error'); }
+    }
+  </script>
+
+  <!-- Crop Modal — Profile Photo -->
+  <div class="modal-overlay" id="crop-modal">
+    <div class="modal" style="width:600px">
+      <div class="modal-header">
+        <div class="modal-title">✂️ Crop Profile Photo</div>
+        <button class="modal-close" onclick="closeCropModal()">×</button>
+      </div>
+      <div class="modal-body" style="padding:20px;">
+        <div style="max-height:420px;overflow:hidden;display:flex;justify-content:center;">
+          <img id="crop-image" style="max-width:100%;display:block;">
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="cropAndSave()">✂️ Crop & Save</button>
+          <button class="btn btn-outline" onclick="closeCropModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Crop Modal — Flag / Banner -->
+  <div class="modal-overlay" id="crop-flag-modal">
+    <div class="modal" style="width:640px">
+      <div class="modal-header">
+        <div class="modal-title">✂️ Crop Flag / Banner</div>
+        <button class="modal-close" onclick="closeFlagCropModal()">×</button>
+      </div>
+      <div class="modal-body" style="padding:20px;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:12px;text-align:center">Drag to reposition · Drag corners to resize · Free aspect ratio</div>
+        <div style="max-height:400px;overflow:hidden;display:flex;justify-content:center;">
+          <img id="crop-flag-image" style="max-width:100%;display:block;">
+        </div>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap">
+          <button class="btn btn-primary" onclick="cropFlagAndSave()">✂️ Crop & Save</button>
+          <button class="btn btn-outline" onclick="closeFlagCropModal()">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+
+</html>

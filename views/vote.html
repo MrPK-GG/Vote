@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vote — AKR Academy School Elections</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="/themes.js"></script>
+<style>
+  :root {
+    --gold: #F5A623;
+    --gold-light: #FFD166;
+    --gold-dark: #C77B00;
+    --navy: #0A1A4E;
+    --navy-light: #1A2F7A;
+    --blue: #1B4FD8;
+    --blue-light: #3B6FF0;
+    --white: #FFFFFF;
+    --success: #2ECC71;
+    --card-bg: rgba(255,255,255,0.05);
+    --border: rgba(245,166,35,0.2);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(160deg, var(--bg) 0%, var(--navy) 40%, var(--navy-light) 100%);
+    color: var(--white);
+  }
+
+  /* Header */
+  .header {
+    background: color-mix(in srgb, var(--navy) 90%, transparent);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    padding: 0 24px;
+  }
+
+  .header-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .header-logo {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px; font-weight: 700;
+    color: var(--white);
+  }
+
+  .header-title span {
+    display: block;
+    font-family: 'Nunito', sans-serif;
+    font-size: 11px; font-weight: 600;
+    color: var(--gold); opacity: 0.8;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .booth-badge {
+    background: rgba(245,166,35,0.12);
+    border: 1px solid rgba(245,166,35,0.3);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 12px; font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 0.5px;
+  }
+
+  /* Main */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 36px 20px 100px;
+  }
+
+  .page-header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: fade-down 0.6s ease both;
+  }
+
+  @keyframes fade-down {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .page-header h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 32px; font-weight: 900;
+    color: var(--white);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .page-header h1 span { color: var(--gold); }
+
+  .page-header p {
+    color: rgba(255,255,255,0.5);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  /* Progress */
+  .progress-bar {
+    background: rgba(255,255,255,0.08);
+    border-radius: 100px;
+    height: 6px;
+    margin-bottom: 40px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold), var(--gold-light));
+    border-radius: 100px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  /* Skeleton Loading */
+  .skeleton {
+    background: linear-gradient(90deg, rgba(255,255,255,0.06) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.06) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.5s infinite;
+    border-radius: 8px;
+  }
+
+  @keyframes skeleton-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  .skeleton-category { height: 28px; width: 180px; margin-bottom: 20px; border-radius: 6px; }
+  .skeleton-card { height: 110px; border-radius: 20px; margin-bottom: 12px; }
+
+  /* Category Section */
+  .category-section {
+    margin-bottom: 40px;
+    animation: fade-up 0.5s ease both;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .category-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .category-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(245,166,35,0.3);
+  }
+
+  .category-title {
+    font-family: 'Cinzel', serif;
+    font-size: 20px; font-weight: 700;
+    color: var(--white);
+  }
+
+  .category-subtitle {
+    font-size: 11px; font-weight: 700;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .required-badge {
+    margin-left: auto;
+    font-size: 10px; font-weight: 800;
+    letter-spacing: 1.5px;
+    padding: 4px 10px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    background: rgba(255,107,107,0.15);
+    border: 1px solid rgba(255,107,107,0.3);
+    color: #FF8080;
+    transition: all 0.3s;
+  }
+
+  .required-badge.done {
+    background: rgba(46,204,113,0.15);
+    border-color: rgba(46,204,113,0.3);
+    color: #2ECC71;
+  }
+
+  .candidates-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 14px;
+  }
+
+  /* Candidate Card */
+  .candidate-card {
+    background: var(--card-bg);
+    border: 2px solid transparent;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .candidate-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(245,166,35,0.08), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .candidate-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(245,166,35,0.3);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.3);
+  }
+
+  .candidate-card:hover::before { opacity: 1; }
+
+  .candidate-card.selected {
+    border-color: var(--gold);
+    background: rgba(245,166,35,0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 36px rgba(245,166,35,0.2);
+  }
+
+  .candidate-card.selected::before { opacity: 1; }
+
+  .candidate-pic {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2.5px solid rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    transition: border-color 0.3s;
+    background: linear-gradient(135deg, var(--navy-light), var(--blue));
+  }
+
+  .candidate-card.selected .candidate-pic {
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(245,166,35,0.4);
+  }
+
+  .candidate-pic-placeholder {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    border: 2.5px solid rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--navy-light), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 32px; font-weight: 900;
+    color: var(--gold);
+    transition: border-color 0.3s;
+  }
+
+  .candidate-card.selected .candidate-pic-placeholder {
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(245,166,35,0.4);
+  }
+
+  .candidate-flag {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 56px; height: 38px;
+    border-radius: 4px;
+    object-fit: contain;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    opacity: 0.8;
+  }
+
+  .candidate-info { flex: 1; min-width: 0; }
+
+  .candidate-name {
+    font-family: 'Cinzel', serif;
+    font-size: 15px; font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+  }
+
+  .candidate-meta {
+    display: flex; gap: 6px; flex-wrap: wrap;
+  }
+
+  .meta-badge {
+    font-size: 10px; font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 100px;
+    letter-spacing: 0.5px;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+  }
+
+  .select-indicator {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s;
+    font-size: 13px;
+  }
+
+  .candidate-card.selected .select-indicator {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+  }
+
+  /* Divider between categories */
+  .category-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(245,166,35,0.2), transparent);
+    margin: 8px 0 40px;
+  }
+
+  /* Submit Area */
+  .submit-area {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: color-mix(in srgb, var(--navy) 95%, transparent);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid var(--border);
+    padding: 16px 24px;
+    z-index: 50;
+  }
+
+  .submit-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .vote-summary {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.6);
+  }
+
+  .vote-summary strong { color: var(--gold); }
+
+  .btn-submit {
+    padding: 16px 40px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+    border: none;
+    border-radius: 14px;
+    font-family: 'Cinzel', serif;
+    font-size: 14px; font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(245,166,35,0.35);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(245,166,35,0.5);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  /* Success overlay */
+  .success-overlay {
+    position: fixed; inset: 0; z-index: 200;
+    background: color-mix(in srgb, var(--navy) 97%, transparent);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+  }
+
+  /* Booth limit overlay */
+  .limit-overlay {
+    position: fixed; inset: 0; z-index: 300;
+    background: rgba(10,10,30,0.97);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+  }
+  .limit-overlay.active { display: flex; }
+  .limit-icon {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 44px;
+    margin-bottom: 28px;
+    box-shadow: 0 0 60px rgba(231,76,60,0.5);
+    animation: pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  .limit-title {
+    font-family: 'Cinzel', serif;
+    font-size: 28px; font-weight: 900;
+    color: #e74c3c;
+    margin-bottom: 14px;
+  }
+  .limit-msg {
+    font-size: 15px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 36px;
+    max-width: 380px;
+    line-height: 1.7;
+  }
+  .limit-countdown {
+    font-family: 'Cinzel', serif;
+    font-size: 52px; font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 8px;
+    animation: limit-pulse 1s ease-in-out infinite;
+  }
+  @keyframes limit-pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.92); }
+  }
+  .limit-redirect-label {
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .success-overlay.active { display: flex; }
+
+  .success-icon {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #27AE60, #2ECC71);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 44px;
+    margin-bottom: 28px;
+    box-shadow: 0 0 60px rgba(46,204,113,0.4);
+    animation: pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+
+  @keyframes pop-in {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .success-title {
+    font-family: 'Cinzel', serif;
+    font-size: 32px; font-weight: 900;
+    color: var(--white);
+    margin-bottom: 12px;
+  }
+
+  .success-msg {
+    font-size: 15px;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 40px;
+    max-width: 380px;
+    line-height: 1.7;
+  }
+
+  .countdown-ring {
+    position: relative;
+    width: 90px; height: 90px;
+    margin-bottom: 20px;
+  }
+
+  .countdown-ring svg {
+    transform: rotate(-90deg);
+  }
+
+  .countdown-ring circle {
+    fill: none;
+    stroke: rgba(255,255,255,0.1);
+    stroke-width: 6;
+  }
+
+  .countdown-ring .progress-circle {
+    stroke: var(--gold);
+    stroke-dasharray: 251;
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s linear;
+  }
+
+  .countdown-number {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 28px; font-weight: 900;
+    color: var(--gold);
+  }
+
+  .next-voter {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-top: 8px;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 80px 24px;
+  }
+
+  .empty-icon { font-size: 64px; margin-bottom: 20px; }
+  .empty-title { font-family: 'Cinzel', serif; font-size: 22px; color: var(--white); margin-bottom: 8px; }
+  .empty-desc { color: rgba(255,255,255,0.4); font-size: 14px; }
+
+  /* Spinner */
+  .spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-top-color: var(--gold);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .footer-info {
+    text-align: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.5px;
+    margin-top: 8px;
+  }
+
+  .footer-info a { color: var(--gold); opacity: 0.6; text-decoration: none; }
+
+  @media (max-width: 900px) {
+    .main { padding: 30px 18px 120px; }
+    .candidates-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  }
+
+  @media (max-width: 600px) {
+    .header-inner { flex-wrap: wrap; justify-content: center; gap: 14px; }
+    .header-title { text-align: center; }
+    .booth-badge { margin-top: 8px; width: 100%; max-width: 320px; justify-content: center; }
+    .main { padding: 24px 14px 140px; }
+    .candidates-grid { grid-template-columns: 1fr; }
+    .candidate-card { flex-wrap: wrap; align-items: flex-start; padding: 16px; gap: 12px; }
+    .candidate-pic, .candidate-pic-placeholder { width: 60px; height: 60px; }
+    .candidate-name { font-size: 14px; line-height: 1.3; }
+    .candidate-meta { gap: 8px; }
+    .submit-area { padding: 14px 16px; }
+    .submit-inner { flex-direction: column; gap: 12px; align-items: stretch; }
+    .btn-submit { width: 100%; }
+    .page-header h1 { font-size: 24px; }
+    .page-header p { font-size: 13px; }
+    .success-overlay { padding: 16px; }
+    .success-title { font-size: 28px; }
+    .countdown-ring { width: 76px; height: 76px; }
+    .success-msg { max-width: 100%; font-size: 14px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <img class="header-logo" src="https://panel.rathamcloud.xyz/extensions/resourcemanager/uploads/1775581335_images (1).jpg" alt="AKR Academy School Logo">
+      <div class="header-title">
+        AKR Academy School
+        <span>Student Elections 2026</span>
+      </div>
+    </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <div class="booth-badge" id="booth-name-badge">Loading...</div>
+      <div class="booth-badge" id="votes-left-badge" style="display: none; background: rgba(46, 204, 113, 0.12); border-color: rgba(46, 204, 113, 0.3); color: var(--success); transition: all 0.3s ease;"></div>
+    </div>
+  </div>
+</header>
+
+<main class="main" id="main-content">
+  <!-- Skeleton -->
+  <div id="skeleton-loader">
+    <div class="page-header" style="margin-bottom:32px">
+      <div class="skeleton" style="height:36px;width:280px;margin:0 auto 12px"></div>
+      <div class="skeleton" style="height:16px;width:200px;margin:0 auto"></div>
+    </div>
+    <div class="skeleton" style="height:6px;border-radius:100px;margin-bottom:40px"></div>
+    <div class="skeleton skeleton-category"></div>
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-card"></div>
+    <div style="margin-top:32px"></div>
+    <div class="skeleton skeleton-category"></div>
+    <div class="skeleton skeleton-card"></div>
+    <div class="skeleton skeleton-card"></div>
+  </div>
+
+  <!-- Actual content -->
+  <div id="vote-content" style="display:none">
+    <div class="page-header">
+      <h1>Cast Your <span>Vote</span></h1>
+      <p>Select one candidate per category — your vote matters</p>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <div id="categories-container"></div>
+
+    <div class="empty-state" id="empty-state" style="display:none">
+      <div class="empty-icon">🗳️</div>
+      <div class="empty-title">No Candidates Available</div>
+      <div class="empty-desc">Please ask your teacher to add candidates before voting begins.</div>
+    </div>
+  </div>
+</main>
+
+<div class="submit-area" id="submit-area" style="display:none">
+  <div class="submit-inner">
+    <div class="vote-summary">
+      Selected: <strong id="selected-count">0</strong> of <strong id="total-count">0</strong> categories
+    </div>
+    <button class="btn-submit" id="submit-btn" disabled onclick="submitVotes()">
+      CAST MY VOTE
+    </button>
+  </div>
+  <div class="footer-info">
+    Developed by <a href="https://mrpk.qzz.io" target="_blank">Pranav Vinayak</a> &nbsp;·&nbsp; AKR Academy School
+  </div>
+</div>
+
+<!-- Success Overlay -->
+<div class="success-overlay" id="success-overlay">
+  <div class="success-icon">✓</div>
+  <div class="success-title">Vote Cast!</div>
+  <div class="success-msg">Your vote has been recorded securely. Thank you for participating in the AKR Academy School Elections.</div>
+  
+  <div class="countdown-ring">
+    <svg width="90" height="90" viewBox="0 0 90 90">
+      <circle cx="45" cy="45" r="40" />
+      <circle class="progress-circle" id="countdown-circle" cx="45" cy="45" r="40" />
+    </svg>
+    <div class="countdown-number" id="countdown-number">10</div>
+  </div>
+  <div class="next-voter">Next voter in</div>
+</div>
+
+<!-- Booth Limit Overlay -->
+<div class="limit-overlay" id="limit-overlay">
+  <div class="limit-icon">🚫</div>
+  <div class="limit-title">Booth Limit Reached</div>
+  <div class="limit-msg">This booth has reached its maximum vote limit. No more voters are allowed at this booth.</div>
+  <div class="limit-countdown" id="limit-countdown">3</div>
+  <div class="limit-redirect-label">Returning to home...</div>
+</div>
+
+<script>
+loadAndApplyTheme();
+
+let categoriesData = [];
+let selections = {};
+let totalCategories = 0;
+let voteWaitSeconds = 10;
+let voteSoundEnabled = false;
+
+const ICONS = ['👑', '⭐', '🏆', '🎖️', '🌟', '💫', '🥇', '🎗️'];
+
+async function loadVotingData() {
+  try {
+    const res = await fetch('/api/voting-data');
+    const data = await res.json();
+
+    if (!data.success) {
+      window.location.href = '/';
+      return;
+    }
+
+    document.getElementById('booth-name-badge').textContent = '📍 ' + data.boothName;
+    if (data.showVotesLeft && data.votesLeft !== null) {
+      const badge = document.getElementById('votes-left-badge');
+      badge.textContent = `Votes Left: ${data.votesLeft}`;
+      badge.style.display = 'block';
+      if (data.votesLeft <= 0) {
+        badge.style.color = '#FF6B6B';
+        badge.style.borderColor = 'rgba(255,107,107,0.3)';
+        badge.style.background = 'rgba(255,107,107,0.12)';
+      }
+      window.votesLeftGlobal = data.votesLeft;
+    }
+    
+    categoriesData = data.categories;
+    totalCategories = categoriesData.length;
+
+    await loadVoteWaitTime();
+    await loadVoteSound();
+
+    document.getElementById('skeleton-loader').style.display = 'none';
+    document.getElementById('vote-content').style.display = 'block';
+    document.getElementById('submit-area').style.display = 'block';
+    document.getElementById('total-count').textContent = totalCategories;
+
+    if (totalCategories === 0) {
+      document.getElementById('empty-state').style.display = 'block';
+      return;
+    }
+
+    renderCategories();
+  } catch (e) {
+    window.location.href = '/';
+  }
+}
+
+async function loadVoteWaitTime() {
+  try {
+    const res = await fetch('/api/vote-wait-time');
+    const data = await res.json();
+    if (!data.success) return;
+    voteWaitSeconds = data.seconds || 10;
+  } catch (e) {
+    voteWaitSeconds = 10;
+  }
+}
+
+async function loadVoteSound() {
+  try {
+    const res = await fetch('/api/vote-sound');
+    const data = await res.json();
+    voteSoundEnabled = data.enabled === true;
+  } catch (e) {
+    voteSoundEnabled = false;
+  }
+}
+
+// ===== VOTE BEEP SOUND =====
+var voteBeepAudio = null;
+
+function initBeepAudio() {
+  try {
+    voteBeepAudio = new Audio('/beep.mp3');
+    voteBeepAudio.volume = 1.0;
+    voteBeepAudio.load();
+  } catch(e) {}
+}
+
+// Initialize the audio element on page load
+initBeepAudio();
+
+function unlockAudio() {
+  // Called during user click to unlock audio playback
+  if (!voteSoundEnabled || !voteBeepAudio) return;
+  try {
+    voteBeepAudio.currentTime = 0;
+    var p = voteBeepAudio.play();
+    if (p && p.then) {
+      p.then(function() {
+        voteBeepAudio.pause();
+        voteBeepAudio.currentTime = 0;
+      }).catch(function(){});
+    } else {
+      voteBeepAudio.pause();
+      voteBeepAudio.currentTime = 0;
+    }
+  } catch(e) {}
+}
+
+function playVoteBeep() {
+  if (!voteBeepAudio) return;
+  try {
+    voteBeepAudio.currentTime = 0;
+    voteBeepAudio.play().catch(function(){});
+  } catch(e) {}
+}
+
+function renderCategories() {
+  const container = document.getElementById('categories-container');
+  container.innerHTML = '';
+
+  categoriesData.forEach((cat, idx) => {
+    const section = document.createElement('div');
+    section.className = 'category-section';
+    section.style.animationDelay = `${idx * 0.1}s`;
+
+    const icon = ICONS[idx % ICONS.length];
+
+    section.innerHTML = `
+      <div class="category-header">
+        <div class="category-icon">${icon}</div>
+        <div>
+          <div class="category-title">${escHtml(cat.name)}</div>
+          <div class="category-subtitle">Select one candidate</div>
+        </div>
+        <div class="required-badge" id="badge-${cat.id}">Required</div>
+      </div>
+      <div class="candidates-grid" id="grid-${cat.id}">
+        ${cat.candidates.map(c => renderCandidateCard(c, cat.id)).join('')}
+      </div>
+    `;
+
+    if (idx < categoriesData.length - 1) {
+      section.innerHTML += `<div class="category-divider" style="margin-top:32px"></div>`;
+    }
+
+    container.appendChild(section);
+  });
+}
+
+function renderCandidateCard(c, catId) {
+  const pic = c.profile_pic
+    ? `<img src="/uploads/${c.profile_pic}" alt="${escHtml(c.name)}" class="candidate-pic" onerror="this.outerHTML=getPlaceholder('${c.name}')">`
+    : getPlaceholder(c.name);
+
+  const flag = c.flag ? `<img src="/uploads/${c.flag}" alt="flag" class="candidate-flag">` : '';
+
+  return `
+    <div class="candidate-card" id="card-${c.id}" onclick="selectCandidate(${catId}, ${c.id}, this)">
+      ${pic}
+      ${flag}
+      <div class="candidate-info">
+        <div class="candidate-name">${escHtml(c.name)}</div>
+        <div class="candidate-meta">
+          <span class="meta-badge">Class ${escHtml(c.class)}</span>
+          <span class="meta-badge">Sec ${escHtml(c.section)}</span>
+        </div>
+      </div>
+      <div class="select-indicator" id="ind-${c.id}">○</div>
+    </div>
+  `;
+}
+
+function getPlaceholder(name) {
+  const initial = name ? name.charAt(0).toUpperCase() : '?';
+  return `<div class="candidate-pic-placeholder">${initial}</div>`;
+}
+
+function selectCandidate(catId, candidateId, cardEl) {
+  // Deselect previous in same category
+  const prevId = selections[catId];
+  if (prevId) {
+    const prevCard = document.getElementById(`card-${prevId}`);
+    const prevInd = document.getElementById(`ind-${prevId}`);
+    if (prevCard) prevCard.classList.remove('selected');
+    if (prevInd) prevInd.textContent = '○';
+  }
+
+  // Select new
+  selections[catId] = candidateId;
+  cardEl.classList.add('selected');
+  document.getElementById(`ind-${candidateId}`).textContent = '✓';
+
+  // Update badge
+  const badge = document.getElementById(`badge-${catId}`);
+  badge.textContent = '✓ Voted';
+  badge.classList.add('done');
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const count = Object.keys(selections).length;
+  document.getElementById('selected-count').textContent = count;
+  const pct = totalCategories > 0 ? (count / totalCategories) * 100 : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('submit-btn').disabled = count !== totalCategories;
+}
+
+async function submitVotes() {
+  if (Object.keys(selections).length < totalCategories) {
+    alert('Please vote for all categories');
+    return;
+  }
+  
+  if (window.votesLeftGlobal !== undefined && window.votesLeftGlobal <= 0) {
+    showLimitOverlay();
+    return;
+  }
+
+  // Unlock audio context during user gesture so beep can play after async fetch
+  unlockAudio();
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+  try {
+    const res = await fetch('/api/submit-votes', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ votes: selections })
+    });
+    const data = await res.json();
+
+    if (data.success) {
+      if (window.votesLeftGlobal !== undefined) {
+        window.votesLeftGlobal = Math.max(0, window.votesLeftGlobal - 1);
+        const b = document.getElementById('votes-left-badge');
+        b.textContent = `Votes Left: ${window.votesLeftGlobal}`;
+        if (window.votesLeftGlobal <= 0) {
+          b.style.color = '#FF6B6B';
+          b.style.borderColor = 'rgba(255,107,107,0.3)';
+          b.style.background = 'rgba(255,107,107,0.12)';
+        }
+      }
+      showSuccess();
+    } else {
+      if (data.maxLimitReached) {
+        showLimitOverlay();
+      } else {
+        alert(data.message || 'Error submitting votes');
+        btn.innerHTML = 'CAST MY VOTE';
+        btn.disabled = false;
+      }
+    }
+  } catch (e) {
+    alert('Connection error. Please try again.');
+    btn.disabled = false;
+    btn.textContent = 'CAST MY VOTE';
+  }
+}
+
+function showSuccess() {
+  const overlay = document.getElementById('success-overlay');
+  overlay.classList.add('active');
+  if (voteSoundEnabled) playVoteBeep();
+
+
+  let count = voteWaitSeconds;
+  const totalSeconds = voteWaitSeconds;
+  const numEl = document.getElementById('countdown-number');
+  const circle = document.getElementById('countdown-circle');
+  const circumference = 251;
+
+  numEl.textContent = count;
+  circle.style.strokeDashoffset = 0;
+
+  const timer = setInterval(() => {
+    count--;
+    numEl.textContent = count;
+    const offset = circumference * (1 - count / totalSeconds);
+    circle.style.strokeDashoffset = offset;
+
+    if (count <= 0) {
+      clearInterval(timer);
+      overlay.classList.remove('active');
+
+      // If votes are exhausted after this submission, show limit overlay & redirect
+      if (window.votesLeftGlobal !== undefined && window.votesLeftGlobal <= 0) {
+        showLimitOverlay();
+        return;
+      }
+
+      // Reset for next voter
+      selections = {};
+      document.getElementById('submit-btn').disabled = true;
+      document.getElementById('submit-btn').textContent = 'CAST MY VOTE';
+      renderCategories();
+      updateProgress();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, 1000);
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showLimitOverlay() {
+  const overlay = document.getElementById('limit-overlay');
+  const numEl = document.getElementById('limit-countdown');
+  overlay.classList.add('active');
+  let count = 3;
+  numEl.textContent = count;
+  const timer = setInterval(() => {
+    count--;
+    if (count <= 0) {
+      clearInterval(timer);
+      window.location.href = '/';
+      return;
+    }
+    numEl.textContent = count;
+  }, 1000);
+}
+
+loadVotingData();
+</script>
+</body>
+</html>

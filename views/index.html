@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AKR Academy School — Student Elections</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="/themes.js"></script>
+<style>
+  :root {
+    --gold: #F5A623;
+    --gold-light: #FFD166;
+    --gold-dark: #C77B00;
+    --navy: #0A1A4E;
+    --navy-light: #1A2F7A;
+    --blue: #1B4FD8;
+    --blue-light: #3B6FF0;
+    --white: #FFFFFF;
+    --cream: #FFF8E7;
+    --shadow: 0 20px 60px rgba(10,26,78,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Nunito', sans-serif;
+    background: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Animated background */
+  .bg-layer {
+    position: fixed; inset: 0; z-index: 0;
+    background: radial-gradient(ellipse at 20% 50%, var(--navy-light) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, var(--navy) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, var(--navy) 0%, transparent 60%),
+                linear-gradient(135deg, var(--bg, #050D2E) 0%, var(--navy) 50%, var(--navy-light) 100%);
+  }
+
+  .particles {
+    position: fixed; inset: 0; z-index: 1; overflow: hidden;
+  }
+
+  .particle {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: var(--gold);
+    border-radius: 50%;
+    opacity: 0;
+    animation: float-particle linear infinite;
+  }
+
+  @keyframes float-particle {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.6; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-20px) rotate(720deg); opacity: 0; }
+  }
+
+  /* Stars */
+  .stars {
+    position: fixed; inset: 0; z-index: 1;
+    background-image: 
+      radial-gradient(1px 1px at 10% 15%, rgba(255,209,102,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 30%, rgba(255,209,102,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 40% 70%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 10%, rgba(255,209,102,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 85%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 70% 55%, rgba(255,209,102,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 45%, rgba(255,209,102,0.3) 0%, transparent 100%);
+  }
+
+  /* Main card */
+  .card {
+    position: relative; z-index: 10;
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(30px);
+    border: 1px solid var(--border, rgba(245,166,35,0.25));
+    border-radius: 28px;
+    padding: 56px 52px;
+    width: 460px;
+    max-width: 95vw;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+    animation: card-enter 0.8s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  @keyframes card-enter {
+    from { opacity: 0; transform: translateY(40px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Gold shimmer border */
+  .card::before {
+    content: '';
+    position: absolute; inset: -1px;
+    border-radius: 29px;
+    background: linear-gradient(135deg, rgba(245,166,35,0.5), transparent 40%, transparent 60%, rgba(245,166,35,0.3));
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .logo-area {
+    text-align: center;
+    margin-bottom: 36px;
+    animation: fade-down 0.6s 0.2s both;
+  }
+
+  @keyframes fade-down {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .school-logo {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    box-shadow: 0 0 30px rgba(245,166,35,0.4), 0 8px 24px rgba(0,0,0,0.3);
+    object-fit: cover;
+    margin-bottom: 16px;
+    animation: pulse-logo 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse-logo {
+    0%, 100% { box-shadow: 0 0 30px rgba(245,166,35,0.4), 0 8px 24px rgba(0,0,0,0.3); }
+    50% { box-shadow: 0 0 50px rgba(245,166,35,0.7), 0 8px 24px rgba(0,0,0,0.3); }
+  }
+
+  .logo-fallback {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    border: 3px solid var(--gold);
+    background: linear-gradient(135deg, var(--navy-light), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--gold);
+    box-shadow: 0 0 30px rgba(245,166,35,0.4);
+    animation: pulse-logo 3s ease-in-out infinite;
+  }
+
+  .school-name {
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.9;
+  }
+
+  .tagline {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1.5px;
+    margin-top: 4px;
+  }
+
+  h1 {
+    font-family: 'Cinzel', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--white);
+    text-align: center;
+    margin-bottom: 8px;
+    line-height: 1.2;
+    animation: fade-up 0.6s 0.35s both;
+  }
+
+  .subtitle {
+    text-align: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 36px;
+    animation: fade-up 0.6s 0.45s both;
+  }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* PIN Input */
+  .pin-group {
+    animation: fade-up 0.6s 0.55s both;
+  }
+
+  .pin-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .pin-digits {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 28px;
+  }
+
+  .pin-digit {
+    width: 72px; height: 80px;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(245,166,35,0.2);
+    border-radius: 16px;
+    font-family: 'Cinzel', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gold);
+    text-align: center;
+    outline: none;
+    transition: all 0.3s ease;
+    caret-color: var(--gold);
+    letter-spacing: 0;
+  }
+
+  .pin-digit:focus {
+    border-color: var(--gold);
+    background: rgba(245,166,35,0.08);
+    box-shadow: 0 0 20px rgba(245,166,35,0.2);
+    transform: translateY(-3px);
+  }
+
+  .pin-digit.filled {
+    border-color: var(--gold);
+    background: rgba(245,166,35,0.1);
+  }
+
+  /* Hidden real input */
+  #pin-input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    height: 1px;
+  }
+
+  .modern-input {
+    width: 100%;
+    padding: 16px;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(245,166,35,0.2);
+    border-radius: 12px;
+    color: var(--white);
+    font-size: 16px;
+    outline: none;
+    transition: all 0.3s;
+    font-family: 'Nunito', sans-serif;
+  }
+  .modern-input:focus {
+    border-color: var(--gold);
+    background: rgba(245,166,35,0.08);
+  }
+
+  .btn-enter {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold), var(--gold-light));
+    border: none;
+    border-radius: 14px;
+    font-family: 'Cinzel', serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(245,166,35,0.35);
+  }
+
+  .btn-enter::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.3) 50%, transparent 70%);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+
+  .btn-enter:hover::before { transform: translateX(100%); }
+  .btn-enter:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 36px rgba(245,166,35,0.5);
+  }
+  .btn-enter:active { transform: translateY(0); }
+  .btn-enter:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .error-msg {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: #FF6B6B;
+    margin-top: 16px;
+    padding: 12px 16px;
+    background: rgba(255,107,107,0.1);
+    border: 1px solid rgba(255,107,107,0.3);
+    border-radius: 10px;
+    display: none;
+    animation: shake 0.4s ease;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+
+  .divider {
+    display: flex; align-items: center; gap: 12px;
+    margin: 28px 0;
+  }
+  .divider-line { flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+  .divider-text { font-size: 11px; color: rgba(255,255,255,0.2); letter-spacing: 2px; }
+
+  .footer-info {
+    text-align: center;
+    font-size: 11px;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.5px;
+    margin-top: 4px;
+    animation: fade-up 0.6s 0.7s both;
+  }
+
+  .footer-info a { color: var(--gold); opacity: 0.6; text-decoration: none; }
+
+  /* Booth limit overlay (index) */
+  .limit-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(6,6,20,0.97);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+  }
+  .limit-overlay.active { display: flex; }
+  .limit-icon {
+    width: 100px; height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 44px;
+    margin-bottom: 28px;
+    box-shadow: 0 0 60px rgba(231,76,60,0.5);
+    animation: pop-in 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes pop-in {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .limit-title {
+    font-family: 'Cinzel', serif;
+    font-size: 28px; font-weight: 900;
+    color: #e74c3c;
+    margin-bottom: 14px;
+  }
+  .limit-msg {
+    font-size: 15px;
+    color: rgba(255,255,255,0.65);
+    margin-bottom: 36px;
+    max-width: 380px;
+    line-height: 1.7;
+  }
+  .limit-countdown {
+    font-family: 'Cinzel', serif;
+    font-size: 52px; font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 8px;
+    animation: limit-pulse 1s ease-in-out infinite;
+  }
+  @keyframes limit-pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.92); }
+  }
+  .limit-redirect-label {
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* Loading state */
+  .spinner {
+    display: inline-block;
+    width: 18px; height: 18px;
+    border: 2px solid rgba(10,26,78,0.3);
+    border-top-color: var(--navy);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 760px) {
+    .card { padding: 42px 32px; width: min(100%, 420px); }
+    .logo-area { margin-bottom: 28px; }
+    .school-logo { width: 76px; height: 76px; }
+    h1 { font-size: 22px; }
+    .subtitle { font-size: 12.5px; }
+    .pin-digits { gap: 10px; }
+    .pin-digit { width: 60px; height: 70px; font-size: 30px; }
+    .btn-enter { padding: 16px; }
+  }
+
+  @media (max-width: 520px) {
+    body { align-items: flex-start; padding: 24px 0; }
+    .card { padding: 30px 24px; }
+    .school-logo { width: 64px; height: 64px; }
+    .pin-digits { gap: 8px; }
+    .pin-digit { width: 52px; height: 62px; font-size: 28px; }
+    .subtitle { font-size: 12px; }
+  }
+
+  /* Status bar */
+  .status-bar {
+    margin-top: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .status-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.5px;
+  }
+
+  .status-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    flex-shrink: 0;
+    transition: background 0.4s;
+  }
+
+  .status-dot.open { background: #2ECC71; box-shadow: 0 0 8px rgba(46,204,113,0.6); animation: pulse-dot 2s ease-in-out infinite; }
+  .status-dot.closed { background: #FF6B6B; }
+
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .status-stats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .stat-chip {
+    background: rgba(245,166,35,0.08);
+    border: 1px solid rgba(245,166,35,0.15);
+    border-radius: 100px;
+    padding: 3px 10px;
+    font-size: 10px;
+    font-weight: 800;
+    color: rgba(245,166,35,0.7);
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+<div class="bg-layer"></div>
+<div class="stars"></div>
+<div class="particles" id="particles"></div>
+
+<!-- Booth Limit Overlay -->
+<div class="limit-overlay" id="limit-overlay">
+  <div class="limit-icon">🚫</div>
+  <div class="limit-title">Booth Limit Reached</div>
+  <div class="limit-msg">This booth has reached its maximum vote limit. No more voters are allowed at this booth.</div>
+  <div class="limit-countdown" id="limit-countdown">3</div>
+  <div class="limit-redirect-label">Returning to home...</div>
+</div>
+
+<div class="card">
+  <div class="logo-area">
+    <img class="school-logo" src="https://panel.rathamcloud.xyz/extensions/resourcemanager/uploads/1775581335_images (1).jpg" alt="AKR Academy School Logo">
+    <div class="school-name">AKR Academy School</div>
+    <div class="tagline">DISCIPLINE · KNOWLEDGE · EXCELLENCE</div>
+  </div>
+
+  <h1>Student Election</h1>
+  <p class="subtitle">Enter your polling booth PIN to begin</p>
+
+  <div id="login-container">
+    <div class="pin-group" id="pin-form">
+      <label class="pin-label">Booth PIN</label>
+      <input type="text" id="pin-input" maxlength="4" inputmode="numeric" autocomplete="off">
+      <div class="pin-digits" id="pin-display" onclick="document.getElementById('pin-input').focus()">
+        <div class="pin-digit" id="d0"></div>
+        <div class="pin-digit" id="d1"></div>
+        <div class="pin-digit" id="d2"></div>
+        <div class="pin-digit" id="d3"></div>
+      </div>
+    </div>
+
+    <!-- Username/Password Form -->
+    <div id="userpass-form" style="display:none; margin-bottom: 24px;">
+      <div style="margin-bottom: 16px;">
+        <label class="pin-label">Booth Username</label>
+        <input type="text" id="user-input" class="modern-input" placeholder="Enter username" autocomplete="off">
+      </div>
+      <div>
+        <label class="pin-label">Booth Password</label>
+        <input type="password" id="pass-input" class="modern-input" placeholder="Enter password" autocomplete="off">
+      </div>
+    </div>
+
+    <button class="btn-enter" id="enter-btn" onclick="submitAuth()">
+      ENTER VOTING BOOTH
+    </button>
+  </div>
+
+  <div id="phase-message" style="display:none; text-align:center; font-size:18px; color:var(--gold); font-family: 'Cinzel', serif; font-weight:700; margin: 40px 0;">
+    Election has not started yet.
+  </div>
+
+  <div class="error-msg" id="error-msg"></div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-text">SECURE VOTING</div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- Live Status Bar -->
+  <div class="status-bar" id="status-bar">
+    <div class="status-item">
+      <span class="status-dot" id="status-dot"></span>
+      <span id="status-label">Checking status...</span>
+    </div>
+    <div class="status-stats" id="status-stats" style="display:none">
+      <span class="stat-chip" id="stat-votes">— votes cast</span>
+      <span class="stat-chip" id="stat-booths">— booths active</span>
+    </div>
+  </div>
+
+  <div class="footer-info">
+    Developed by <a href="https://mrpk.qzz.io" target="_blank">Pranav Vinayak</a> &nbsp;·&nbsp; AKR Academy School
+  </div>
+</div>
+
+<script>
+loadAndApplyTheme();
+
+// Particle generator
+const container = document.getElementById('particles');
+for (let i = 0; i < 30; i++) {
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.left = Math.random() * 100 + '%';
+  p.style.width = p.style.height = (Math.random() * 4 + 1) + 'px';
+  p.style.animationDuration = (Math.random() * 12 + 8) + 's';
+  p.style.animationDelay = (Math.random() * 10) + 's';
+  p.style.opacity = Math.random() * 0.5;
+  container.appendChild(p);
+}
+
+// Initialization based on settings
+const settings = window.SITE_SETTINGS || {};
+const loginMode = settings.login_screen_type || 'pin';
+const phase = settings.election_phase || 'voting';
+
+const enterBtn = document.getElementById('enter-btn');
+const loginContainer = document.getElementById('login-container');
+const phaseMessage = document.getElementById('phase-message');
+const pinForm = document.getElementById('pin-form');
+const userpassForm = document.getElementById('userpass-form');
+
+if (phase === 'preparing') {
+  loginContainer.style.display = 'none';
+  phaseMessage.style.display = 'block';
+} else if (phase === 'completed' || settings.maintenance_mode === 'true') {
+  loginContainer.style.display = 'none';
+  phaseMessage.textContent = 'This election has concluded.';
+  phaseMessage.style.display = 'block';
+} else {
+  if (loginMode === 'userpass') {
+    pinForm.style.display = 'none';
+    userpassForm.style.display = 'block';
+    enterBtn.disabled = false;
+  } else {
+    enterBtn.disabled = true;
+  }
+}
+
+// PIN input logic
+const pinInput = document.getElementById('pin-input');
+const digits = [0,1,2,3].map(i => document.getElementById(`d${i}`));
+
+if (loginMode === 'pin' && phase === 'voting') {
+  pinInput.focus();
+}
+
+document.getElementById('pin-display').addEventListener('click', () => pinInput.focus());
+
+pinInput.addEventListener('input', (e) => {
+  const val = e.target.value.replace(/\D/g, '').slice(0,4);
+  e.target.value = val;
+  digits.forEach((d, i) => {
+    d.textContent = val[i] ? '●' : '';
+    d.classList.toggle('filled', !!val[i]);
+  });
+  enterBtn.disabled = val.length !== 4;
+  document.getElementById('error-msg').style.display = 'none';
+  
+  // Auto-submit at 4 digits
+  if (val.length === 4) setTimeout(submitAuth, 200);
+});
+
+pinInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter' && !enterBtn.disabled) submitAuth();
+});
+document.getElementById('user-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') submitAuth();
+});
+document.getElementById('pass-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') submitAuth();
+});
+
+async function submitAuth() {
+  let payload = {};
+  if (loginMode === 'userpass') {
+    const user = document.getElementById('user-input').value.trim();
+    const pass = document.getElementById('pass-input').value.trim();
+    if (!user || !pass) return showError('Username and password required');
+    payload = { username: user, password: pass };
+  } else {
+    const pin = pinInput.value;
+    if (pin.length !== 4) return;
+    payload = { pin };
+  }
+  
+  enterBtn.disabled = true;
+  enterBtn.innerHTML = '<span class="spinner"></span> Verifying...';
+  
+  try {
+    const res = await fetch('/api/verify-pin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      enterBtn.innerHTML = '✓ Access Granted';
+      enterBtn.style.background = 'linear-gradient(135deg, #2ECC71, #27AE60)';
+      setTimeout(() => window.location.href = data.redirect, 600);
+    } else if (data.message && (data.message.includes('reached its') || data.message.includes('vote limit'))) {
+      // Booth is at max — show limit overlay with 3-2-1 countdown then stay on page
+      showLimitOverlay();
+      enterBtn.innerHTML = 'ENTER VOTING BOOTH';
+      enterBtn.disabled = true;
+      pinInput.value = '';
+      digits.forEach(d => { d.textContent = ''; d.classList.remove('filled'); });
+    } else {
+      showError(data.message || 'Invalid PIN');
+      pinInput.value = '';
+      digits.forEach(d => { d.textContent = ''; d.classList.remove('filled'); });
+      pinInput.focus();
+      enterBtn.innerHTML = 'ENTER VOTING BOOTH';
+      enterBtn.disabled = true;
+    }
+  } catch (err) {
+    showError('Connection error. Please try again.');
+    enterBtn.innerHTML = 'ENTER VOTING BOOTH';
+    enterBtn.disabled = false;
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('error-msg');
+  el.textContent = msg;
+  el.style.display = 'block';
+  el.style.animation = 'none';
+  setTimeout(() => el.style.animation = 'shake 0.4s ease', 10);
+}
+
+function showLimitOverlay() {
+  const overlay = document.getElementById('limit-overlay');
+  const numEl = document.getElementById('limit-countdown');
+  overlay.classList.add('active');
+  let count = 3;
+  numEl.textContent = count;
+  const timer = setInterval(() => {
+    count--;
+    numEl.textContent = count;
+    if (count <= 0) {
+      clearInterval(timer);
+      // Reload the page so the booth stays locked (cannot re-enter)
+      window.location.reload();
+    }
+  }, 1000);
+}
+
+// ===== LIVE STATUS FETCHER =====
+async function fetchStatus() {
+  try {
+    const res = await fetch('/api/status');
+    const data = await res.json();
+    if (!data.success) return;
+
+    const dot = document.getElementById('status-dot');
+    const label = document.getElementById('status-label');
+    const stats = document.getElementById('status-stats');
+    const statVotes = document.getElementById('stat-votes');
+    const statBooths = document.getElementById('stat-booths');
+
+    if (data.votingOpen) {
+      dot.className = 'status-dot open';
+      label.textContent = 'Voting is now open';
+      label.style.color = 'rgba(46,204,113,0.8)';
+    } else {
+      dot.className = 'status-dot closed';
+      label.textContent = 'Voting is currently closed';
+      label.style.color = 'rgba(255,107,107,0.8)';
+    }
+
+    statVotes.textContent = `${data.totalVotes.toLocaleString()} vote${data.totalVotes !== 1 ? 's' : ''} cast`;
+    statBooths.textContent = `${data.activeBooths} booth${data.activeBooths !== 1 ? 's' : ''} active`;
+    stats.style.display = 'flex';
+  } catch (e) { /* silently ignore */ }
+}
+
+fetchStatus();
+setInterval(fetchStatus, 30000);
+</script>
+</body>
+</html>

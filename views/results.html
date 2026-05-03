@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Results — AKR Academy School Elections</title>
+<meta name="description" content="Live election results for AKR Academy School Student Elections 2026">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<script src="/themes.js"></script>
+<style>
+  :root {
+    --gold: #F5A623;
+    --gold-light: #FFD166;
+    --gold-dark: #C77B00;
+    --navy: #0A1A4E;
+    --navy-light: #1A2F7A;
+    --blue: #1B4FD8;
+    --white: #FFFFFF;
+    --success: #2ECC71;
+    --card-bg: rgba(255,255,255,0.05);
+    --border: rgba(245,166,35,0.18);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(160deg, var(--bg, #050D2E) 0%, var(--navy) 40%, var(--navy-light) 100%);
+    color: var(--white);
+  }
+
+  /* ── Header ── */
+  .header {
+    background: color-mix(in srgb, var(--navy) 92%, transparent);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    padding: 0 24px;
+  }
+
+  .header-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 68px;
+    gap: 16px;
+  }
+
+  .header-brand { display: flex; align-items: center; gap: 14px; }
+
+  .header-logo {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    object-fit: cover;
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    font-family: 'Cinzel', serif;
+    font-size: 15px; font-weight: 700;
+    color: var(--white);
+  }
+
+  .header-title span {
+    display: block;
+    font-family: 'Nunito', sans-serif;
+    font-size: 10px; font-weight: 600;
+    color: var(--gold); opacity: 0.8;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .live-badge {
+    display: flex; align-items: center; gap: 7px;
+    background: rgba(255,107,107,0.12);
+    border: 1px solid rgba(255,107,107,0.3);
+    border-radius: 20px;
+    padding: 6px 14px;
+    font-size: 11px; font-weight: 800;
+    color: #FF8080;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .live-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #FF6B6B;
+    animation: pulse-red 1.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-red {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .refresh-info {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Main ── */
+  .main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 36px 20px 80px;
+  }
+
+  /* ── Stats row ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+    margin-bottom: 40px;
+  }
+
+  .stat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px 22px;
+    text-align: center;
+    animation: fade-up 0.5s ease both;
+  }
+
+  .stat-card:nth-child(1) { animation-delay: 0.05s; }
+  .stat-card:nth-child(2) { animation-delay: 0.1s; }
+  .stat-card:nth-child(3) { animation-delay: 0.15s; }
+
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .stat-number {
+    font-family: 'Cinzel', serif;
+    font-size: 36px; font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-size: 11px; font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  /* ── Layout ── */
+  .results-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    gap: 28px;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .results-layout { grid-template-columns: 1fr; }
+  }
+
+  /* ── Section title ── */
+  .section-title {
+    font-family: 'Cinzel', serif;
+    font-size: 13px; font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 18px;
+  }
+
+  /* ── Category card ── */
+  .category-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 20px;
+    animation: fade-up 0.5s ease both;
+  }
+
+  .cat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .cat-icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(135deg, var(--gold-dark), var(--gold));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(245,166,35,0.3);
+  }
+
+  .cat-name {
+    font-family: 'Cinzel', serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--white);
+    flex: 1;
+  }
+
+  .cat-total {
+    font-size: 11px; font-weight: 800;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Candidate row ── */
+  .candidate-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .candidate-row:last-child { border-bottom: none; }
+
+  .cand-rank {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 900;
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.4);
+  }
+
+  .cand-rank.gold   { background: rgba(245,166,35,0.2); color: var(--gold); }
+  .cand-rank.silver { background: rgba(192,192,192,0.15); color: #C0C0C0; }
+  .cand-rank.bronze { background: rgba(205,127,50,0.15); color: #CD7F32; }
+
+  .cand-pic {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,0.12);
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--navy-light), var(--blue));
+  }
+
+  .cand-pic-placeholder {
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.12);
+    flex-shrink: 0;
+    background: linear-gradient(135deg, var(--navy-light), var(--blue));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 16px; font-weight: 900;
+    color: var(--gold);
+  }
+
+  .cand-info { flex: 1; min-width: 0; }
+
+  .cand-name {
+    font-size: 13px; font-weight: 800;
+    color: var(--white);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 2px;
+  }
+
+  .cand-meta {
+    font-size: 10px; font-weight: 700;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.5px;
+  }
+
+  .cand-bar-wrap { flex: 1; min-width: 60px; }
+
+  .cand-bar-bg {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    overflow: hidden;
+    margin-bottom: 4px;
+  }
+
+  .cand-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  .candidate-row:first-child .cand-bar-fill {
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold-light));
+  }
+
+  .cand-count {
+    font-size: 12px; font-weight: 900;
+    color: var(--gold);
+    flex-shrink: 0;
+    min-width: 50px;
+    text-align: right;
+  }
+
+  /* ── Booth column ── */
+  .booth-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    position: sticky;
+    top: 84px;
+  }
+
+  .booth-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    animation: fade-up 0.4s ease both;
+  }
+
+  .booth-row:last-child { border-bottom: none; }
+
+  .booth-rank-num {
+    font-family: 'Cinzel', serif;
+    font-size: 18px; font-weight: 900;
+    color: rgba(255,255,255,0.12);
+    min-width: 28px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .booth-info { flex: 1; min-width: 0; }
+
+  .booth-name {
+    font-size: 13px; font-weight: 800;
+    color: var(--white);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 6px;
+  }
+
+  .booth-bar-bg {
+    height: 5px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    overflow: hidden;
+  }
+
+  .booth-bar-fill {
+    height: 100%;
+    border-radius: 100px;
+    background: linear-gradient(90deg, var(--blue), var(--blue-light, var(--blue)));
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+    width: 0%;
+  }
+
+  .booth-row:first-child .booth-bar-fill {
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+  }
+
+  .booth-votes {
+    font-size: 13px; font-weight: 900;
+    color: var(--white);
+    flex-shrink: 0;
+    text-align: right;
+  }
+
+  .booth-votes small {
+    display: block;
+    font-size: 9px; font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Empty / locked ── */
+  .locked-state {
+    text-align: center;
+    padding: 80px 24px;
+  }
+
+  .locked-icon { font-size: 64px; margin-bottom: 20px; }
+  .locked-title { font-family: 'Cinzel', serif; font-size: 24px; color: var(--white); margin-bottom: 10px; }
+  .locked-desc { color: rgba(255,255,255,0.4); font-size: 14px; max-width: 360px; margin: 0 auto; line-height: 1.7; }
+
+  /* ── Loading skeleton ── */
+  .skeleton {
+    background: linear-gradient(90deg,
+      rgba(255,255,255,0.06) 25%,
+      rgba(255,255,255,0.12) 50%,
+      rgba(255,255,255,0.06) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+    border-radius: 8px;
+  }
+  @keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 600px) {
+    .header-inner { flex-wrap: wrap; height: auto; padding: 12px 0; gap: 10px; }
+    .refresh-info { display: none; }
+    .main { padding: 24px 14px 60px; }
+    .stat-number { font-size: 28px; }
+    .booth-card { position: static; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <img class="header-logo" src="https://panel.rathamcloud.xyz/extensions/resourcemanager/uploads/1775581335_images (1).jpg" alt="AKR Academy School Logo">
+      <div class="header-title">
+        AKR Academy School
+        <span>Student Elections 2026 — Live Results</span>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span class="refresh-info" id="refresh-info">Refreshing in <span id="refresh-countdown">10</span>s</span>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        Live
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- Loading state -->
+  <div id="loading-state">
+    <div class="stats-row">
+      <div class="stat-card skeleton" style="height:86px"></div>
+      <div class="stat-card skeleton" style="height:86px"></div>
+      <div class="stat-card skeleton" style="height:86px"></div>
+      <div class="stat-card skeleton" style="height:86px"></div>
+    </div>
+    <div class="skeleton" style="height:220px;border-radius:20px;margin-bottom:20px"></div>
+    <div class="skeleton" style="height:180px;border-radius:20px"></div>
+  </div>
+
+  <!-- Locked state (results not public) -->
+  <div id="locked-state" style="display:none" class="locked-state">
+    <div class="locked-icon">🔒</div>
+    <div class="locked-title">Results Not Yet Public</div>
+    <div class="locked-desc">The election results will be released by the administrator. Please check back later.</div>
+  </div>
+
+  <!-- Results content -->
+  <div id="results-content" style="display:none">
+
+    <!-- Stats row -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-number" id="stat-total-members">0</div>
+        <div class="stat-label">Members Voted</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="stat-total-votes">0</div>
+        <div class="stat-label">Total Votes Cast</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="stat-total-cats">0</div>
+        <div class="stat-label">Categories</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="stat-total-booths">0</div>
+        <div class="stat-label">Polling Booths</div>
+      </div>
+    </div>
+
+    <!-- Main layout -->
+    <div class="results-layout">
+
+      <!-- Left: candidate results by category -->
+      <div id="categories-col">
+        <div class="section-title">📊 Results by Category</div>
+        <div id="categories-container"></div>
+      </div>
+
+      <!-- Right: booth breakdown -->
+      <div>
+        <div class="section-title">🗳️ Votes by Polling Booth</div>
+        <div class="booth-card">
+          <div id="booths-container"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+const ICONS = ['👑','⭐','🏆','🎖️','🌟','💫','🥇','🎗️'];
+const RANK_CLASS = ['gold','silver','bronze'];
+let refreshInterval = null;
+let countdownInterval = null;
+let refreshSeconds = 10;
+
+loadAndApplyTheme();
+
+function escHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function animateNumber(el, target) {
+  const current = parseInt(el.textContent.replace(/,/g,'')) || 0;
+  if (current === target) return;
+  const diff = target - current;
+  const steps = 20;
+  const inc = diff / steps;
+  let s = 0;
+  const t = setInterval(() => {
+    s++;
+    const v = Math.round(current + inc * s);
+    el.textContent = v.toLocaleString();
+    if (s >= steps) { el.textContent = target.toLocaleString(); clearInterval(t); }
+  }, 30);
+}
+
+// ── Fetch Results ──
+async function fetchResults() {
+  try {
+    const [resResults, resBooths] = await Promise.all([
+      fetch('/api/live-results'),
+      fetch('/api/booth-stats')
+    ]);
+    const dataResults = await resResults.json();
+    const dataBooths  = await resBooths.json();
+
+    document.getElementById('loading-state').style.display = 'none';
+
+    if (!dataResults.success) {
+      document.getElementById('locked-state').style.display = 'block';
+      document.getElementById('results-content').style.display = 'none';
+      return;
+    }
+
+    document.getElementById('locked-state').style.display = 'none';
+    document.getElementById('results-content').style.display = 'block';
+
+    renderStats(dataResults, dataBooths);
+    renderCategories(dataResults.categories);
+    if (dataBooths.success) renderBooths(dataBooths.booths, dataBooths.totalVotes);
+
+  } catch (e) {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('locked-state').style.display = 'block';
+  }
+}
+
+function renderStats(dataResults, dataBooths) {
+  animateNumber(document.getElementById('stat-total-members'), dataResults.totalMembersVoted || 0);
+  animateNumber(document.getElementById('stat-total-votes'), dataResults.totalVotes || 0);
+  animateNumber(document.getElementById('stat-total-cats'), dataResults.categories?.length || 0);
+  animateNumber(document.getElementById('stat-total-booths'), dataBooths?.booths?.length || 0);
+}
+
+function renderCategories(categories) {
+  const container = document.getElementById('categories-container');
+  if (!categories || !categories.length) {
+    container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:13px">No results yet.</p>';
+    return;
+  }
+
+  container.innerHTML = categories.map((cat, idx) => {
+    const icon = ICONS[idx % ICONS.length];
+    const maxVotes = Math.max(...cat.candidates.map(c => c.vote_count), 1);
+    const catTotal = cat.candidates.reduce((s, c) => s + c.vote_count, 0);
+
+    const rows = cat.candidates.map((c, ri) => {
+      const pct = maxVotes > 0 ? Math.round((c.vote_count / maxVotes) * 100) : 0;
+      const rankClass = RANK_CLASS[ri] || '';
+      const pic = c.profile_pic
+        ? `<img src="/uploads/${escHtml(c.profile_pic)}" alt="${escHtml(c.name)}" class="cand-pic" onerror="this.outerHTML='<div class=\\'cand-pic-placeholder\\'>${escHtml(c.name.charAt(0))}</div>'">`
+        : `<div class="cand-pic-placeholder">${escHtml(c.name.charAt(0))}</div>`;
+
+      return `
+        <div class="candidate-row">
+          <div class="cand-rank ${rankClass}">${ri === 0 ? '🥇' : ri === 1 ? '🥈' : ri === 2 ? '🥉' : ri+1}</div>
+          ${pic}
+          <div class="cand-info">
+            <div class="cand-name">${escHtml(c.name)}</div>
+            <div class="cand-meta">Class ${escHtml(c.class)} &bull; Sec ${escHtml(c.section)}</div>
+          </div>
+          <div class="cand-bar-wrap">
+            <div class="cand-bar-bg">
+              <div class="cand-bar-fill" style="width:${pct}%"></div>
+            </div>
+          </div>
+          <div class="cand-count">${c.vote_count.toLocaleString()} <span style="font-size:9px;color:rgba(255,255,255,0.3)">votes</span></div>
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="category-card" style="animation-delay:${idx * 0.08}s">
+        <div class="cat-header">
+          <div class="cat-icon">${icon}</div>
+          <div class="cat-name">${escHtml(cat.name)}</div>
+          <div class="cat-total">${catTotal} total votes</div>
+        </div>
+        ${rows}
+      </div>`;
+  }).join('');
+}
+
+function renderBooths(booths, totalVotes) {
+  const container = document.getElementById('booths-container');
+  if (!booths || !booths.length) {
+    container.innerHTML = '<p style="color:rgba(255,255,255,0.3);font-size:13px;text-align:center;padding:20px 0">No booths yet.</p>';
+    return;
+  }
+
+  const maxVotes = Math.max(...booths.map(b => b.vote_count), 1);
+
+  container.innerHTML = booths.map((b, i) => {
+    const pct = maxVotes > 0 ? Math.round((b.vote_count / maxVotes) * 100) : 0;
+    const sharePct = totalVotes > 0 ? Math.round((b.vote_count / totalVotes) * 100) : 0;
+
+    return `
+      <div class="booth-row" style="animation-delay:${i * 0.06}s">
+        <div class="booth-rank-num">${i + 1}</div>
+        <div class="booth-info">
+          <div class="booth-name">${escHtml(b.name)}</div>
+          <div class="booth-bar-bg">
+            <div class="booth-bar-fill" style="width:${pct}%"></div>
+          </div>
+        </div>
+        <div class="booth-votes">
+          ${b.vote_count.toLocaleString()}
+          <small>${b.member_voted_count} members &bull; ${sharePct}%</small>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── Countdown timer ──
+function startCountdown() {
+  let remaining = refreshSeconds;
+  document.getElementById('refresh-countdown').textContent = remaining;
+
+  if (countdownInterval) clearInterval(countdownInterval);
+  countdownInterval = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) {
+      remaining = refreshSeconds;
+      fetchResults();
+    }
+    document.getElementById('refresh-countdown').textContent = remaining;
+  }, 1000);
+}
+
+// Initial load
+fetchResults();
+startCountdown();
+</script>
+</body>
+</html>
