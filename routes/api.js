@@ -127,7 +127,30 @@ router.post('/submit-votes', (req, res) => {
     });
     
     insertMany(votes);
-    
+
+    // ── FIX: Refresh session token for the next voter ──────────────────────────
+    // The old token is now is_complete=1. If we keep it in req.session, the next
+    // voter's submit-votes call would run UPDATE on an already-complete row → no-op.
+    // Members Voted would stay frozen at 1 and the login limit check would also be wrong.
+    //
+    // Solution: check if limit is now reached, then either:
+    //   • Not reached → create a fresh incomplete session token for the next voter
+    //   • Reached     → clear the token so stray submissions are blocked
+    let limitNowReached = false;
+    if (boothInfo && boothInfo.max_votes !== null) {
+      const completedNow = db.prepare('SELECT COUNT(*) as count FROM vote_sessions WHERE booth_id = ? AND is_complete = 1').get(boothId);
+      limitNowReached = completedNow.count >= boothInfo.max_votes;
+    }
+
+    if (!limitNowReached) {
+      const newToken = crypto.randomBytes(32).toString('hex');
+      db.prepare('INSERT INTO vote_sessions (booth_id, session_token) VALUES (?, ?)').run(boothId, newToken);
+      req.session.voteToken = newToken;
+    } else {
+      req.session.voteToken = null; // block any stray submit attempts
+    }
+    // ──────────────────────────────────────────────────────────────────────────
+
     // Clear vote session data (but keep booth access)
     req.session.votedCategories = [];
     
