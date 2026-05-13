@@ -281,6 +281,30 @@ router.post('/reset-votes', requireAdmin, (req, res) => {
   } catch (e) { res.json({ success: false, message: e.message }); }
 });
 
+// Reset votes for a specific booth (votes + sessions + candidate counts)
+router.post('/booths/:id/reset-votes', requireAdmin, (req, res) => {
+  try {
+    const boothId = parseInt(req.params.id, 10);
+    const booth = db.prepare('SELECT name FROM polling_booths WHERE id = ?').get(boothId);
+    if (!booth) return res.json({ success: false, message: 'Booth not found' });
+
+    // Decrement each candidate's vote_count by how many votes came from this booth
+    const boothVotes = db.prepare(
+      'SELECT candidate_id, COUNT(*) as cnt FROM votes WHERE booth_id = ? GROUP BY candidate_id'
+    ).all(boothId);
+    const decrCount = db.prepare('UPDATE candidates SET vote_count = MAX(0, vote_count - ?) WHERE id = ?');
+    const resetTx = db.transaction(() => {
+      boothVotes.forEach(row => decrCount.run(row.cnt, row.candidate_id));
+      db.prepare('DELETE FROM votes WHERE booth_id = ?').run(boothId);
+      db.prepare('DELETE FROM vote_sessions WHERE booth_id = ?').run(boothId);
+    });
+    resetTx();
+
+    db.logAudit(req.session.adminUsername, 'RESET_BOOTH_VOTES', { boothId, name: booth.name });
+    res.json({ success: true });
+  } catch (e) { res.json({ success: false, message: e.message }); }
+});
+
 // Reset votes for specific candidate
 router.post('/reset-candidate-votes/:id', requireAdmin, (req, res) => {
   try {
