@@ -1569,7 +1569,7 @@
   <aside class="sidebar">
     <div class="sidebar-brand">
       <img class="brand-logo"
-        src="https://panel.rathamcloud.xyz/extensions/resourcemanager/uploads/1775581335_images (1).jpg"
+        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS5JVh2Kae__eU56-7C3gOxX1x4B0I8w5OfEQ&s"
         alt="AKR Academy School Logo">
       <div class="brand-text">
         AKR Academy
@@ -1794,7 +1794,7 @@
                 <th>Auth Type</th>
                 <th>Code / User</th>
                 <th>Max Votes</th>
-                <th>Votes Received</th>
+                <th>Members Voted</th>
                 <th>Booth Expires</th>
                 <th>Status</th>
                 <th>Actions</th>
@@ -3235,6 +3235,7 @@
         <td>
           <div style="display:flex;gap:6px">
             <button class="btn btn-outline btn-sm btn-icon" onclick="editBooth(${b.id})" title="Edit">✏️</button>
+            <button class="btn btn-warning btn-sm btn-icon" onclick="resetBoothVotes(${b.id}, '${escHtml(b.name)}')" title="Reset Votes">🔄</button>
             <button class="btn btn-danger btn-sm btn-icon" onclick="deleteBooth(${b.id})" title="Delete">🗑</button>
           </div>
         </td>
@@ -3342,6 +3343,18 @@
       const d = await res.json();
       if (d.success) { toast('Booth deleted', 'success'); await loadBooths(); }
       else toast(d.message || 'Error', 'error');
+    }
+
+    async function resetBoothVotes(id, name) {
+      if (!confirm(`Reset all votes for booth "${name}"?\n\nThis will:\n• Clear Members Voted count for this booth\n• Remove this booth's contribution from candidate vote totals\n\nThis cannot be undone.`)) return;
+      const res = await fetch(`/admin/booths/${id}/reset-votes`, { method: 'POST' });
+      const d = await res.json();
+      if (d.success) {
+        toast(`Votes reset for booth "${name}"`, 'success');
+        await loadBooths();
+        await loadOverview();
+        await loadCandidates();
+      } else toast(d.message || 'Error', 'error');
     }
 
     async function bulkDeleteBooths() {
